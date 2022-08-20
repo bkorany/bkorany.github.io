@@ -1,7 +1,325 @@
-<!DOCTYPE html>
+
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-</body>
-</html>
+<head><a name="top"></a><meta http-equiv="Content-Type" content="text/html; charset=GBK"><title> Belal Korany's Homepage </title>
+
+<style>
+a.mainlink:link 
+{
+	font-size: small;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	display: block;
+	color: #000000;
+	padding: 4px;
+	background-color: #FFFFFF;
+	text-decoration: none;
+	border: 1px dotted #000000;
+}
+.boxed {
+  border: 1px solid black ;
+}
+</style>
+<!-- the old color is F0F8FF --> 
+</head>
+<body style="margin-right: 7.5%; margin-left: 7.5%;;padding:0" bgcolor="#FFFFFF" text="black">
+<font face="cmu serif" size="4pt">
+
+
+<p>
+<center>
+<table width="100%" border="0" cellpadding="10" cellspacing="0">
+<tr>
+<td width=170>
+<img src="pics/BK.jpg" border=1 width=170>
+</td>
+<td valign="bottom">
+
+
+<h1><font style="font-variant: small-caps; font-size: 37">Belal s. a. Korany</font></h1> 
+<h3>
+Ph.D. Candidate<br>
+Dept. of Electrical & Computer Engineering<br>
+University of California, Santa Barbara<br>
+<a href="Belal Korany CV.pdf" target = "_blank">CV</a>
+<a href="https://eg.linkedin.com/in/belalsamin/">Linkedin</a>
+<a href="https://scholar.google.com.eg/citations?user=9ASj8L8AAAAJ&hl=en">Scholar</a> 
+
+<br>
+</h3>
+<h4>
+<td width=150 "valign="right" align="middle">
+<div class="boxed"><a href="#Interests">Research Interests</a></div>
+<div class="boxed"><a href="#Projects">Research Projects</a></div>
+<div class="boxed"><a href="#Work">Work Experience</a></div>
+<div class="boxed"><a href="#Education">Education</a></div>
+<div class="boxed"><a HREF="#Publications">Publications</a></div>
+<div class="boxed"><a href="#About">About me</a></div>
+</h4>
+
+</td>
+</tr>
+</table>
+</center>
+
+<strong>Lab:</strong> Harold Frank Hall 4148<br>
+<strong>Email:</strong> belalkorany [at] ece [dot] ucsb [dot] edu <br>
+
+<br>
+I am a final year Ph.D. candidate at the <a href="http://www.ece.ucsb.edu/">ECE</a> department in <a href="http://www.ucsb.edu/">UCSB</a>, under the supervision of <a href="http://www.ece.ucsb.edu/~ymostofi/">Prof. Yasamin Mostofi</a>, with current research thrusts of novel non-conventional  sensing  and  learning. Prior to joining UCSB, I worked as a TA in Cairo University, where I got my Bachelor and Masters degrees in Electrical Engineering.
+<br>
+<br>
+
+<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
+<a name="Interests"></a>
+<center><h2><font style="font-variant: small-caps; font-size: 32">Research Interests</font></h2> </center>
+<ul>
+
+<li><p> Novel methods for sensing with existing RF signals: e.g. Localization, tracking, person identification, activity recognition, health monitoring, and others. </p>
+<li><p> Wireless Communications. </p>
+<li><p> Physical layer of next generation wireless networks. </p>
+</ul>
+<br>
+<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
+
+<a name="Projects"></a>
+<center><h2><font style="font-variant: small-caps; font-size: 32">Research Projects</font></h2> </center> 
+
+<h3> 1. Stationary Crowd Counting using WiFi signals [UCSB, 2021]: </h3>
+<!-- <a href="Mobisys21 sample.rar" target="_blank">Sample</a>
+<br> -->
+In this project, we investigate  the problem of counting a stationary crowd using the ambient WiFi signals, measured on off-the-shelf devices. As opposed to traditional crowd counting methods, which rely on all people in the area to constantly walk/move, stationary crowd counting is a relatively difficult problem due to the lack of major motion information. This project has resulted in one paper in ACM MobiSys '21 (acceptance rate = 21.5%).<br>
+
+In this project, I: 
+<ul>
+<li><p>  Developed a new and rigorous mathematical model to describe the fidgeting of stationary people. A fidget describes the small in-place motion that a stationary person is frequently involved in (such as pose adjustments). </p>
+<li><p>  Proposed a method to estimate the number of people in an area based on their collective fidgeting behavior, inspired by old queuing theory problems.</p>
+<li><p>  Experimentally validated our proposed approach by counting up to 10 people in 4 different areas, showing that the counting error is 0 or 1 only for 93.6% of the time. </p>
+</ul>
+<center>
+<figure>
+    <img src='pics/counting.png' width=65% />
+    <figcaption><font style="font-size: 15">Counting a group of stationary (seated) people gathered in a patio to watch a movie together, using off-the-shelf WiFi.</font></figcaption>
+</figure>
+</center>
+<br>
+
+
+
+<h3> 2. Nocturnal Seizure Detection using WiFi signals [UCSB, 2020]: </h3>
+In this project, we investigate  the problem of detecting nocturnal seizures in epilepsy patients, since they pose a high risk for the patients due to being unnoticed by the caregivers. Hence, we propose to invasively use the ambient WiFi signals near the patient to detect their nocturnal sleep movements and decide whether they are seizures or normal. This project has resulted in one paper in <a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">IEEE IoT '21</a>.<br>
+
+In this project, I: 
+<ul>
+<li><p>  Developed a new and rigorous mathematical model to describe the WiFi signals measured on a device near a sleeping patient during different kinds of sleep motions. </p>
+<li><p>  Proposed a WiFi processing pipeline to detect these nocturnal motions and classify them into seizures and normal movements.</p>
+<li><p>  Experimentally validated our proposed approach using simulated seizures from 20 actors, showing that our proposed framework can detect 94% of nocturnal seizures, with a very low probability of false alarm. </p>
+</ul>
+
+
+<h3> 3. Translating Videos to Instant RF Signals for Training RF Sensing Systems [UCSB, 2020]: </h3> 
+
+
+In this project, we investigate  how vision data (e.g. video footage) can be used to generate instant RF signals for the purpose of training RF sensing systems. We propose, for the first time, a WiFi sensing system for gym activity classification by only using online available videos from YouTube. We published this work in <a href="Papers/IMWUT20_CaiKoranyKaranamMostofi.pdf" target="_blank">ACM IMWUT '20</a>. 
+
+In this project, we: 
+<ul>
+<li><p>  Proposed a method that enables training RF sensing systems with zero RF training data and by only using the available online video footage. </p>
+<li><p>  Showed how vision data can be translated to the RF domain.</p>
+<li><p>  Trained a WiFi sensing system for gym activity classification by only using online available videos from YouTube.</p>
+<li><p>  Extensively tested the proposed pipeline with several experiments.</p>
+</ul>
+<center>
+<figure>
+    <img src='pics/sample_pipeline.png' width=65% />
+    <figcaption><font style="font-size: 15">Steps of Video-to-WiFi conversion: 1) 3D mesh extraction, and 2) WiFi signal/spectrogram generation.</font></figcaption>
+</figure>
+</center>
+<br>
+
+<h3> 4. Through-wall Person Identification with WiFi Signals [UCSB, 2019]: </h3>
+In this project, we investigate the problem of using WiFi to identify a person walking behind a wall from a candidate video footage. Such a technique can be used in many several real-world applications, such as security, surveillance, and personalized service provisioning. This project has resulted in two papers in <a href="Papers/MobiCom19_KoranyKaranamCaiMostofi.pdf" target = "_blank">ACM MobiCom '19</a> and <a href="Papers/IoT20_KoranyCaiMostofi.pdf" target="_blank">IEEE IoT '20</a>. More information about this project can be found in the <a href="https://web.ece.ucsb.edu/~ymostofi/IdentificationThroughWalls">project page</a>.<br>
+
+In this project, we: 
+<ul>
+<li><p>  Introduced XModal-ID: a novel system that uses WiFi to determine if a person walking behind a wall is the same as one walking in a given video footage. </p>
+<li><p>  Extended the proposed WiFi-based identification system to simultaneously identify multiple people through walls based on their gaits and Angles-of-Arrival.</p>
+<li><p>  Extensively validated the proposed framework with several experiments by showing how WiFi cards of laptops can identify people through walls.</p>
+</ul>
+<center>
+<figure>
+    <img src='pics/flowchart_xmodal.png' width=70% />
+    <figcaption><font style="font-size: 15">XModal-ID flowchart.</font></figcaption>
+</figure>
+</center>
+
+<br>
+
+
+
+
+
+
+<h3> 5. Human tracking using WiFi signal power [UCSB, 2019]: </h3>
+In this project, we investigate  the problem of simultaneously tracking single or multiple people walking in a WiFi-covered area. We propose a Particle-Filter-based solution to achieve this task using only the received WiFi signal power, which can be easily measured on off-the-shelf WiFi devices.  This project has resulted in two papers in <a href="Papers/IPSN18_KaranamKoranyMostofi.pdf.pdf" target = "_blank">ACM IPSN '18</a>, <a href="Papers/IPSN19_KaranamKoranyMostofi.pdf.pdf" target="_blank">ACM IPSN '19</a>.<br>
+In this project, we: 
+<ul>
+<li><p>  Proposed a particle-filter-based algorithm to track a single person using the WiFi received power.  </p>
+<li><p>  Extended the tracking algorithm to track multiple-people simultaneously using 3 laptops.</p>
+</ul>
+
+<center>
+<figure>
+    <img src='pics/HumanTrackingInset.jpg' width=40% />
+    <figcaption><font style="font-size: 15">Sample human tracking result.</font></figcaption>
+</figure>
+</center>
+
+<br>
+
+<h3> 6. Angle-of-Arrival Estimation Using only Signal Magnitude [UCSB, 2018]: </h3>
+In this project, we investigate  the traditional problem of estimating the Angles-of-Arrival (AoAs) of multiple sources, but using only the received signal's magnitude information.  This project has resulted in a paper in <a href="Papers/IPSN18_KaranamKoranyMostofi.pdf" target = "_blank">ACM IPSN '18</a>.<br>
+
+In this project, we: 
+<ul>
+<li><p>  Demonstrated that AoA estimation using only signal magnitude is possible, without signal phase.  </p>
+<li><p>  Mathematically related AoA to power spectrum content and developed antenna array design strategy. </p>
+<li><p>  Experimentally validated approach using a robot to synthesize arrays and measure WiFi magnitude </p>
+</ul>
+<br>
+<h3> 6. Device-to-Device (D2D) Communications Underlaying Massive MIMO Networks [Cairo University, 2015]: </h3>
+In this project, we explore different power allocation strategies for D2D communications underlaying Massive MIMO networks. We also explore the base station precoder design for ensuring certain QoS constraints for D2D communications.  This project has resulted in a paper in <a href="http://ieeexplore.ieee.org/document/7127643/" target = "_blank">IEEE WCNC '15</a> and a paper in <a href="https://link.springer.com/article/10.1007/s11276-016-1379-8" target = "_blank">Springer Wireless Networks '18</a>.<br>
+
+In this project, we: 
+<ul>
+<li><p>  Demonstrated that AoA estimation using only signal magnitude is possible, without signal phase.  </p>
+<li><p>  Mathematically related AoA to power spectrum content and developed antenna array design strategy. </p>
+<li><p>  Experimentally validated approach using a robot to synthesize arrays and measure WiFi magnitude </p>
+</ul>
+
+
+<p align="right"><a href="#top">Back to top &#8593;</a></p>
+
+
+<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
+<a name="Work"></a>
+<center><h2><font style="font-variant: small-caps; font-size: 32">Work Experience</font></h2> </center>
+
+<table width="100%" border="0" cellpadding="20" cellspacing="0" border-spacing="100">
+<tr>
+<td valign="top" align ="center">
+<img src="pics/QC.jpg" border=0 width=90>
+</td>
+<td valign="center">
+<strong>Summer Intern at Qualcomm, NJ, USA, 2016</strong> <br>
+Recipient of the <i> Roberto Padovani Award </i> for interns with extraordinary technical talent.<br>
+- Analyzed wireless protocols and algorithms for 5G mmWave Networks. <br>
+- Simulated the 5G access network at link-level and system-level.<br>
+
+</td>
+</tr>
+<tr>
+<td valign="top" align="center">
+<img src="pics/intel.jpg" border=0 width=80>
+</td>
+<td valign="center">
+<strong>Wireless Systems Engineer at Intel Labs, Cairo, Egypt, 2013-2014</strong> <br>
+- Developed an interference mitigation solution for  WiFi/LTE coexistence on Intel platforms.<br>
+
+</td>
+</tr>
+
+<tr>
+<td valign="top" align="center">
+<img src="pics/cu.jpeg" border=0 width=90>
+</td>
+<td valign="center">
+<strong>Teaching assistant at the ECE department, Cairo University, Egypt, 2012-2015</strong> <br>
+- Assisted in teaching courses on wireless communications, analog and digital communication systems, signal processing,  information and coding theory, and electric circuits.<br>
+
+</td>
+</tr>
+
+</table>
+</center>
+
+
+<p align="right"><a href="#top">Back to top &#8593;</a></p>
+<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
+
+<a name="Education"></a>
+<center><h2><font style="font-variant: small-caps; font-size: 32">Education</font></h2> </center>
+<ul>
+<li><strong>Ph.D.</strong>, University of California Santa Barbara, California, USA, 2021 (Expected)<br>
+Research Focus: Novel Sensing and Learning Systems. <br>
+<br>
+
+<li><strong>M.Sc.</strong>, Cairo University, Egypt, 2015<br>
+Thesis title: <a href="Belal_S_Amin_Korany_FullOnlineThesis" target = "_blank">Device-to-Device Communications Deployment in Massive MIMO Networks</a>. <br>
+<br>
+
+<li><strong>B.Sc.</strong>, Cairo University, Egypt, 2012 <br>
+Distinction with honors.
+
+</ul>
+<p align="right"><a href="#top">Back to top &#8593;</a></p>
+<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
+<a name="Publications"></a>
+<center><h2><font style="font-variant: small-caps; font-size: 32">Publications</font></h2> </center>
+<h3> Patents: </h3>
+<ul>
+<li><p> Y. Mostofi, C. R. Karanam, and <strong>B. Korany </strong>, "<a href="https://patents.google.com/patent/WO2019200153">System and method of angle-of-arrival estimation, object localization, and target tracking, with received signal magnitude</a>," U.S. Patent Application No. 62/656,050, April 2018.</p></li>
+
+<li><p> A. S. Ibrahim, M. F. Marzban, and <strong>B. S. Amin </strong>, "<a href="https://patents.google.com/patent/US9794097B2/en">Methods and devices for interference variance estimation and interference cancellation</a>," U.S. Patent 9,794,097, issued Oct 2017.</p></li>
+
+<!-- <li><p> A. S. Ibrahim, M. F. Marzban, and <strong>B. S. Amin </strong>, "<a href="https://patents.google.com/patent/DE102014108835A1/en">Method and apparatus for interference variance estimation and interference cancellation</a>," DE patent application number 10 2014 108 835.2, filed June 2014.</p> -->
+</ul> 
+
+<h3> Journal Publications:</h3>
+<ul>
+
+<li><p> <strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">Nocturnal Seizure Detection Using Off-the-Shelf WiFi</a>," in the IEEE Internet of Things (IoT) Journal, 2021. </p></li>	
+
+<li><p> <strong>B. Korany</strong>, H.Cai, and Y. Mostofi, "<a href="Papers/IoT20_KoranyCaiMostofi.pdf" target="_blank">Multiple People Identification Through-Walls Using Off-the-Shelf WiFi</a>," in the IEEE Internet of Things (IoT) Journal, vol. 8, no. 8, pp. 6963-6974, April 2021. (Impact factor: 9.9) </p></li>
+
+<li><p>	H. Cai*, <strong>B. Korany</strong>*, C. R. Karanam*, and Y. Mostofi, "<a href="Papers/IMWUT20_CaiKoranyKaranamMostofi.pdf" target="_blank">Teaching RF to Sense without RF Training Measurements</a>,"
+in proceedings of the ACM on Interactive, Mobile, Wearable, and Ubiquitous Technologies (IMWUT), vol. 4, no. 4, December 2020. [<a href="https://web.ece.ucsb.edu/mostofi-lab/imwut20-data.html">Data and Codes</a>]</p></li>
+
+<li><p> <strong>B. S. Amin, </strong> A. S. Ibrahim, M. H. Ismail, and H. M. Mourad, "<a href="https://link.springer.com/article/10.1007/s11276-016-1379-8">Precoding and Power allocation Algorithms for Device-to-Device Communication in Massive MIMO Networks</a>," in Wireless Networks, vol. 24, no. 3, pp. 925-942, April 2018.</p></li>
+</ul>
+
+
+
+
+<h3> Conference Publications:</h3>
+<ul>
+
+<li><p><strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/Mobisys21_KoranyMostofi.pdf" target="_blank">Counting a Stationary Crowd Using Off-the-Shelf WiFi</a>," in  proceedings of the the 19th ACM International Conference on Mobile Systems, Applications, and Services (MobiSys), June 2021. (acceptance rate: 21.5%) [<a href="https://www.ece.ucsb.edu/~ymostofi/CountingStationaryCrowd.html">Project page</a>]</p></li>
+
+<li><p><strong>B. Korany</strong>*, C. R. Karanam*, H. Cai*, and Y. Mostofi, "<a href="Papers/MobiCom19_KoranyKaranamCaiMostofi.pdf" target = "_blank">XModal-ID: Using WiFi for Through-Wall Person Identification from Candidate Video Footage</a>," in  proceedings of the 25th Annual International Conference on Mobile Computing and Networking, (MobiCom), Oct 2019. (acceptance rate: 18.9%) [<a href="https://www.ece.ucsb.edu/~ymostofi/IdentificationThroughWalls">Project page</a>][<a href="https://www.youtube.com/watch?v=yy3fk5OfVeo">Slides</a>] </p></li>
+
+<li><p>C.R. Karanam, <strong>B. Korany</strong>, and Y. Mostofi, "<a href="Papers/IPSN19_KaranamKoranyMostofi.pdf" target = "_blank">Tracking from One Side -- Multi-Person Passive Tracking withWiFi Magnitude Measurements</a>," in proceedings of the 18th ACM International Conference on Information Processing in Sensor Networks (IPSN), April 2019. (acceptance rate: 27%) </p></li>
+
+<li><p><strong>B. Korany</strong>, S. Depatla, and Y. Mostofi, "<a href="Papers/SAM18_KoranyDepatlaMostofi.pdf" target = "_blank">Subspace-Based Imaging Using Only Power Measurements</a>," in  proceedings  of  the 10th IEEE Sensor Array and Multichannel Signal Processing Workshop, July 2018.</p></li>
+
+
+<li><p><strong>B. Korany</strong>*, C. R. Karanam*, and Y. Mostofi, "<a href="Papers/SAM18_KoranyKaranamMostofi.pdf" target = "_blank">Adaptive Near-Field Imaging with Robotic Arrays</a>," in  proceedings  of  the 10th IEEE Sensor Array and Multichannel Signal Processing Workshop, July 2018.</p></li>
+
+
+<li><p>C.R. Karanam*, <strong>B. Korany</strong>*, and Y. Mostofi, "<a href="Papers/IPSN18_KaranamKoranyMostofi.pdf" target = "_blank"> Magnitude-Based Angle-of-Arrival Estimation, Localization, and Target Tracking</a>," in proceedings of the 17th ACM/IEEE International Conference on Information Processing in Sensor Networks (IPSN), April 2018. (acceptance rate: 26.5%) </p></li>
+
+
+<li><p> <strong>B. S. Amin, </strong> Y. R. Ramadan, A. S. Ibrahim, and M. H. Ismail, "<a href="http://ieeexplore.ieee.org/document/7127643/">Power allocation for Device-to-Device Communication Underlaying Massive MIMO Multicasting Networks</a>," in proceedings of IEEE Wireless Communications and Networking Conference (WCNC) 2015, pp.1219-1224, March 2015.</p>
+</ul>
+
+
+<font color="gray" style="font-size: 15">*equal contribution</font>
+
+<p align="right"><a href="#top">Back to top &#8593;</a></p>
+
+<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
+<a name="About"></a>
+<center><h2><font style="font-variant: small-caps; font-size: 32">About Me</font></h2> </center>
+<center>I am a husband to a lovely wife, Rana, and a father to a lovely daughter, Mariam. I like photography, traveling, Lord of the Rings, and football (Oh, soccer!). </center>
+
+</font>
+</p></li></body></html>
