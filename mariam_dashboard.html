@@ -877,12 +877,21 @@ async function loadData() {
     showLoading('Loading Daily Tracker…');
     const r1 = await fetch(csvUrl('Daily Tracker'));
     if (!r1.ok) throw new Error('Could not fetch Daily Tracker');
-    trackerData = parseTracker(parseCSV(await r1.text()));
+    const csv1 = await r1.text();
+    const rows1 = parseCSV(csv1);
+    console.log('=== Daily Tracker RAW (first 3 rows) ===');
+    rows1.slice(0, 3).forEach((r, i) => console.log(`Row ${i}:`, JSON.stringify(r)));
+    trackerData = parseTracker(rows1);
+    console.log('=== trackerData parsed (first 3) ===');
+    trackerData.slice(0, 3).forEach((r, i) => console.log(`Row ${i}: date=${r[0]}, colC=${r[1]}, confirmed(D)=${r[2]}, focal=${r[3]}, energy=${r[4]}, sleep=${r[18]}, behav=${r[22]}`));
 
     showLoading('Loading Spasm Episodes…');
     const r2 = await fetch(csvUrl('Spasms with head drops'));
     if (!r2.ok) throw new Error('Could not fetch Spasm sheet');
-    spasmDetailData = parseSpasmDetail(parseCSV(await r2.text()));
+    const rows2 = parseCSV(await r2.text());
+    console.log('=== Spasms RAW (first 2 rows) ===');
+    rows2.slice(0, 2).forEach((r, i) => console.log(`Row ${i}:`, JSON.stringify(r)));
+    spasmDetailData = parseSpasmDetail(rows2);
 
     showLoading('Loading Focal Seizures…');
     const r3 = await fetch(csvUrl('Focal and other'));
