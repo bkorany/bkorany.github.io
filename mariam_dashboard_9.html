@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mariam — Health & Seizure Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: #e2ddd4;
+    --text: #1a1714;
+    --text-muted: #7a7268;
+    --accent: #2d6a9f;
+    --accent-light: #e8f1f9;
+    --spasm-confirmed: #c0392b;
+    --spasm-unconfirmed: #e67e22;
+    --focal: #8e44ad;
+    --behavior: #16a085;
+    --sleep: #2980b9;
+    --med: #27ae60;
+    --illness: #e74c3c;
+    --radius: 12px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  header {
+    background: var(--text);
+    color: white;
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+  }
+
+  header p {
+    font-size: 13px;
+    opacity: 0.55;
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .date-range-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+  }
+
+  .date-range-btn:hover, .date-range-btn.active {
+    background: rgba(255,255,255,0.22);
+  }
+
+  .date-inputs {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .date-inputs input {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+
+  .date-inputs input::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+  .date-inputs span { color: rgba(255,255,255,0.5); font-size: 12px; }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: var(--text);
+    padding: 0 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .tab {
+    padding: 10px 18px;
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .tab:hover { color: rgba(255,255,255,0.75); }
+  .tab.active { color: white; border-bottom-color: #6bb3f0; }
+
+  .content {
+    padding: 32px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Summary row */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-card .label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-card .value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .stat-card .sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .stat-card.red .value { color: var(--spasm-confirmed); }
+  .stat-card.orange .value { color: var(--spasm-unconfirmed); }
+  .stat-card.purple .value { color: var(--focal); }
+  .stat-card.teal .value { color: var(--behavior); }
+  .stat-card.blue .value { color: var(--sleep); }
+
+  /* Chart cards */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .chart-grid.full { grid-template-columns: 1fr; }
+  .chart-grid.thirds { grid-template-columns: 1fr 1fr 1fr; }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+
+  .chart-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.1px;
+  }
+
+  .chart-card .chart-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 220px;
+  }
+
+  .chart-wrap.tall { height: 300px; }
+  .chart-wrap.short { height: 150px; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-line {
+    width: 16px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* Medication timeline */
+  .med-timeline {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .med-event {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+
+  .med-event:last-child { border-bottom: none; }
+
+  .med-date {
+    color: var(--text-muted);
+    min-width: 80px;
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
+  .med-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--med);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .med-text { font-weight: 500; }
+
+  /* Seizure log table */
+  .log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .log-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--surface2);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+
+  .log-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .log-table tr:hover td { background: var(--surface2); }
+
+  .table-wrap {
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-red { background: #fdecea; color: var(--spasm-confirmed); }
+  .badge-orange { background: #fef3e2; color: #c0710a; }
+  .badge-purple { background: #f3e8fb; color: var(--focal); }
+
+  /* Weekly aggregation toggle */
+  .agg-toggle {
+    display: flex;
+    gap: 2px;
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 2px;
+    margin-left: auto;
+    float: right;
+    margin-bottom: 8px;
+  }
+
+  .agg-btn {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .agg-btn.active {
+    background: white;
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Tooltip */
+  .note-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: var(--border);
+    border-radius: 50%;
+    text-align: center;
+    font-size: 9px;
+    line-height: 14px;
+    cursor: help;
+    color: var(--text-muted);
+  }
+
+  /* Section dividers */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin: 28px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Series selector */
+  #series-selector {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface2);
+    padding: 10px 12px;
+  }
+
+  .series-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    padding: 0 2px;
+    white-space: nowrap;
+  }
+
+  .series-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px 5px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .series-btn:hover {
+    border-color: #bbb;
+    color: var(--text);
+  }
+
+  .series-btn.active {
+    background: white;
+    border-color: var(--sc, #888);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    font-weight: 500;
+  }
+
+  .series-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+  }
+
+  .series-btn.active .series-swatch {
+    opacity: 1;
+  }
+
+  .illness-band {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .illness-swatch {
+    width: 20px;
+    height: 8px;
+    border-radius: 2px;
+    background: rgba(231,76,60,0.12);
+    border: 1px solid rgba(231,76,60,0.3);
+    display: inline-block;
+  }
+
+  @media print {
+    body { background: white; }
+    header { background: #1a1714; -webkit-print-color-adjust: exact; }
+    .tabs { display: none; }
+    .panel { display: block !important; }
+    .date-range-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay" style="position:fixed;inset:0;background:rgba(247,245,240,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="width:36px;height:36px;border:3px solid #e2ddd4;border-top-color:#2d6a9f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <div id="loading-msg" style="font-family:'DM Sans',sans-serif;font-size:14px;color:#7a7268;">Loading…</div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
+<header>
+  <div>
+    <h1>Mariam — Health & Seizure Dashboard</h1>
+    <p>Live data · Google Sheets · Refreshes on open</p>
+  </div>
+  <div class="header-meta">
+    <div class="date-inputs">
+      <input type="date" id="dateFrom" value="2025-02-01">
+      <span>to</span>
+      <input type="date" id="dateTo" value="2026-04-20">
+    </div>
+    <button class="date-range-btn" onclick="setRange(30)">30d</button>
+    <button class="date-range-btn" onclick="setRange(90)">3mo</button>
+    <button class="date-range-btn" onclick="setRange(180)">6mo</button>
+    <button class="date-range-btn active" onclick="setRange(999)">All</button>
+    <button class="date-range-btn" onclick="loadData()">↺ Refresh</button>
+    <button class="date-range-btn" onclick="window.print()">⬡ Print</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPanel('overview')">Overview</div>
+  <div class="tab" onclick="showPanel('seizures')">Seizures</div>
+  <div class="tab" onclick="showPanel('behavior')">Behavior & Sleep</div>
+  <div class="tab" onclick="showPanel('log')">Detailed Log</div>
+</div>
+
+<div class="content">
+
+  <!-- OVERVIEW PANEL -->
+  <div class="panel active" id="panel-overview">
+    <div class="summary-row">
+      <div class="stat-card red">
+        <div class="label">Confirmed Spasms (days)</div>
+        <div class="value" id="stat-confirmed">—</div>
+        <div class="sub">days with ≥1 confirmed spasm</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="label">Unconfirmed Spasms (days)</div>
+        <div class="value" id="stat-unconfirmed">—</div>
+        <div class="sub">days with non-drop spasm activity</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="label">Focal / Other Events</div>
+        <div class="value" id="stat-focal">—</div>
+        <div class="sub">days with focal/other seizure activity</div>
+      </div>
+      <div class="stat-card teal">
+        <div class="label">Avg Behavior Score</div>
+        <div class="value" id="stat-behavior">—</div>
+        <div class="sub">avg daily total behaviors</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="label">Avg Total Sleep</div>
+        <div class="value" id="stat-sleep">—</div>
+        <div class="sub">avg hours/night in range</div>
+      </div>
+    </div>
+
+    <div class="chart-grid full">
+      <div class="chart-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+          <div>
+            <h3>Overview Chart</h3>
+            <div class="chart-sub">Select metrics below · shaded areas = illness periods</div>
+          </div>
+          <div style="display:flex;gap:4px;margin-top:2px;">
+            <button class="agg-btn active" id="agg-daily" onclick="setAgg('daily')">Daily</button>
+            <button class="agg-btn" id="agg-weekly" onclick="setAgg('weekly')">Weekly</button>
+            <button class="agg-btn" id="agg-monthly" onclick="setAgg('monthly')">Monthly</button>
+          </div>
+        </div>
+
+        <!-- Series selection pane -->
+        <div id="series-selector" style="display:flex;flex-direction:column;gap:6px;margin:14px 0 10px;">
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <div class="series-group-label" style="width:80px">Seizures</div>
+            <button class="series-btn active" data-series="confirmed" style="--sc:#c0392b" onclick="toggleSeries('confirmed',this)">
+              <span class="series-swatch" style="background:#c0392b"></span>Confirmed episodes
+            </button>
+            <button class="series-btn active" data-series="focal" style="--sc:#8e44ad" onclick="toggleSeries('focal',this)">
+              <span class="series-swatch" style="background:#8e44ad"></span>Focal / other
+            </button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <div class="series-group-label" style="width:80px">Sleep</div>
+            <button class="series-btn" data-series="totalSleep" style="--sc:#2980b9" onclick="toggleSeries('totalSleep',this)">
+              <span class="series-swatch" style="background:#2980b9"></span>Total sleep (hrs)
+            </button>
+            <button class="series-btn" data-series="wakings" style="--sc:#5dade2" onclick="toggleSeries('wakings',this)">
+              <span class="series-swatch" style="background:#5dade2"></span>Night wakings
+            </button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <div class="series-group-label" style="width:80px">Behavior</div>
+            <button class="series-btn" data-series="totalBehav" style="--sc:#16a085" onclick="toggleSeries('totalBehav',this)">
+              <span class="series-swatch" style="background:#16a085"></span>Total behaviors
+            </button>
+            <button class="series-btn" data-series="protest" style="--sc:#1abc9c" onclick="toggleSeries('protest',this)">
+              <span class="series-swatch" style="background:#1abc9c"></span>Protesting
+            </button>
+            <button class="series-btn" data-series="spit" style="--sc:#48c9b0" onclick="toggleSeries('spit',this)">
+              <span class="series-swatch" style="background:#48c9b0"></span>Spitting
+            </button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <div class="series-group-label" style="width:80px">Wellbeing</div>
+            <button class="series-btn" data-series="energy" style="--sc:#f39c12" onclick="toggleSeries('energy',this)">
+              <span class="series-swatch" style="background:#f39c12"></span>Energy
+            </button>
+            <button class="series-btn" data-series="alertness" style="--sc:#d35400" onclick="toggleSeries('alertness',this)">
+              <span class="series-swatch" style="background:#d35400"></span>Alertness
+            </button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <div class="series-group-label" style="width:80px">Diet / Labs</div>
+            <button class="series-btn" data-series="ketones" style="--sc:#7d3c98" onclick="toggleSeries('ketones',this)">
+              <span class="series-swatch" style="background:#7d3c98"></span>Ketones
+            </button>
+            <button class="series-btn" data-series="sugar" style="--sc:#e74c3c" onclick="toggleSeries('sugar',this)">
+              <span class="series-swatch" style="background:#e74c3c"></span>Sugar
+            </button>
+            <button class="series-btn" data-series="weight" style="--sc:#5d6d7e" onclick="toggleSeries('weight',this)">
+              <span class="series-swatch" style="background:#5d6d7e"></span>Weight
+            </button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <div class="series-group-label" style="width:80px">Medications</div>
+            <button class="series-btn" data-series="medications" style="--sc:#27ae60" onclick="toggleSeries('medications',this)">
+              <span class="series-swatch" style="background:#27ae60"></span>Med events
+            </button>
+          </div>
+        </div>
+
+        <div class="chart-wrap tall"><canvas id="chart-overview"></canvas></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEIZURES PANEL -->
+  <div class="panel" id="panel-seizures">
+    <div class="chart-grid full">
+      <div class="chart-card">
+        <h3>Confirmed Spasms (with head drops) — Detailed Sheet</h3>
+        <div class="chart-sub">Each episode logged with spasm count and location</div>
+        <div class="chart-wrap tall"><canvas id="chart-spasms-detail"></canvas></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--spasm-confirmed)"></div># of spasms per episode</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--sleep)"></div>Episode duration (min)</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Monthly Spasm Frequency</h3>
+        <div class="chart-sub">Total confirmed spasm events per month</div>
+        <div class="chart-wrap"><canvas id="chart-monthly-spasms"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Inter-Seizure Interval</h3>
+        <div class="chart-sub">Days between consecutive confirmed spasm events (from detailed sheet)</div>
+        <div class="chart-wrap"><canvas id="chart-interval"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-grid full">
+      <div class="chart-card">
+        <h3>Focal Seizure Events</h3>
+        <div class="chart-sub">Timeline with symptom flags (eye deviation, vomiting, convulsions)</div>
+        <div class="chart-wrap"><canvas id="chart-focal"></canvas></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--focal)"></div>Focal event</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--spasm-confirmed)"></div>With convulsions</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--spasm-unconfirmed)"></div>With vomiting only</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEHAVIOR & SLEEP PANEL -->
+  <div class="panel" id="panel-behavior">
+    <div class="chart-grid full">
+      <div class="chart-card">
+        <h3>Daily Behavior Instances</h3>
+        <div class="chart-sub">Protesting, spitting/licking, and other behaviors tracked daily</div>
+        <div class="chart-wrap tall"><canvas id="chart-behavior"></canvas></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Protesting/insubordination</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e67e22"></div>Spitting/licking</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#95a5a6"></div>Other behaviors</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Sleep Duration</h3>
+        <div class="chart-sub">Total sleep hours (including naps) per night</div>
+        <div class="chart-wrap"><canvas id="chart-sleep"></canvas></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--sleep)"></div>Total sleep hours</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--spasm-unconfirmed)"></div>Night wakings (count)</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Energy & Alertness</h3>
+        <div class="chart-sub">General energy and focus levels (1=low, 4=high)</div>
+        <div class="chart-wrap"><canvas id="chart-energy"></canvas></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-line" style="background:var(--med)"></div>Energy level</div>
+          <div class="legend-item"><div class="legend-line" style="background:var(--sleep)"></div>Alertness/focus</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAILED LOG PANEL -->
+  <div class="panel" id="panel-log">
+    <div class="chart-card" style="margin-bottom:16px">
+      <h3>Confirmed Spasm Episodes (Detailed)</h3>
+      <div class="chart-sub">From the "Spasms with head drops" sheet</div>
+      <div class="table-wrap" style="margin-top:12px">
+        <table class="log-table" id="table-spasms"></table>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:16px">
+      <h3>Focal & Other Seizure Events</h3>
+      <div class="chart-sub">From the "Focal and other" sheet</div>
+      <div class="table-wrap" style="margin-top:12px">
+        <table class="log-table" id="table-focal"></table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID = '10GTL-Ob-1N2whIsKt5qg9hUQN_TIuIyTIiaXR1dy54g';
+const csvUrl = name =>
+  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
+
+// ─────────────────────────────────────────
+// CSV PARSER
+// ─────────────────────────────────────────
+function parseCSV(text) {
+  const rows = [];
+  let i = 0;
+  while (i < text.length) {
+    const row = [];
+    while (i < text.length && text[i] !== '\n') {
+      if (text[i] === '"') {
+        i++; let cell = '';
+        while (i < text.length) {
+          if (text[i] === '"' && text[i+1] === '"') { cell += '"'; i += 2; }
+          else if (text[i] === '"') { i++; break; }
+          else { cell += text[i++]; }
+        }
+        row.push(cell);
+        if (text[i] === ',') i++;
+      } else {
+        let cell = '';
+        while (i < text.length && text[i] !== ',' && text[i] !== '\n') cell += text[i++];
+        row.push(cell.trim());
+        if (text[i] === ',') i++;
+      }
+    }
+    if (text[i] === '\n') i++;
+    if (row.some(c => c !== '')) rows.push(row);
+  }
+  return rows;
+}
+
+function toNum(v) {
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : n;
+}
+
+function toISO(v) {
+  if (!v) return null;
+  // Handle "M/D/YYYY" → "YYYY-MM-DD"
+  const m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+  // Already ISO
+  if (/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0,10);
+  return null;
+}
+
+// ─────────────────────────────────────────
+// PARSE EACH SHEET INTO THE EXPECTED FORMAT
+// ─────────────────────────────────────────
+// trackerData: [date, col-C, confirmed_episodes(colD), focal, energy, alertness, bowel,
+//   ketones, sugar, weight, diet, health_comment, life_event, sleep_start, sleep_end,
+//   night_wakings, sleep_duration, nap_hours, total_sleep, protest, spit, other_behav,
+//   total_behav, comments/illness]
+function parseTracker(rows) {
+  return rows.slice(1).map(r => {
+    const date = toISO(r[0]);
+    if (!date) return null;
+    return [
+      date,
+      toNum(r[2]),   // col C (unused)
+      toNum(r[3]),   // col D: confirmed episodes
+      toNum(r[4]),   // col E: focal/other
+      toNum(r[5]),   // energy
+      toNum(r[6]),   // alertness
+      toNum(r[7]),   // bowel
+      r[8]  || '',   // ketones
+      r[9]  || '',   // sugar
+      r[10] || '',   // weight
+      r[11] || '',   // diet
+      r[12] || '',   // health_comment
+      r[13] || '',   // life_event
+      r[14] || '',   // sleep_start
+      r[15] || '',   // sleep_end
+      toNum(r[16]),  // night_wakings
+      toNum(r[17]),  // sleep_duration
+      toNum(r[18]),  // nap_hours
+      toNum(r[19]),  // total_sleep
+      toNum(r[20]),  // protest
+      toNum(r[21]),  // spit
+      toNum(r[22]),  // other_behav
+      toNum(r[23]),  // total_behav
+      r[24] || '',   // comments / illness flag
+    ];
+  }).filter(Boolean);
+}
+
+// spasmDetailData: [date, duration_min, spasm_count, location, notes]
+function parseSpasmDetail(rows) {
+  return rows.slice(1).map(r => {
+    const date = toISO(r[0]);
+    if (!date) return null;
+    return [date, toNum(r[1]), toNum(r[2]), r[3] || '', r[4] || ''];
+  }).filter(Boolean);
+}
+
+// focalData: [date, type, description, severity]
+function parseFocal(rows) {
+  return rows.slice(1).map(r => {
+    const date = toISO(r[0]);
+    if (!date) return null;
+    return [date, r[1] || '', r[2] || '', r[3] || ''];
+  }).filter(Boolean);
+}
+
+// medications: [date_string, description]  (kept as original M/D/YYYY for display)
+function parseMedications(rows) {
+  return rows.slice(1).map(r => {
+    if (!r[0] || !r[1]) return null;
+    const iso = toISO(r[0]);
+    if (!iso) return null;
+    return [iso, r[1]];
+  }).filter(Boolean);
+}
+
+// ─────────────────────────────────────────
+// LOADING STATE
+// ─────────────────────────────────────────
+let trackerData = [], spasmDetailData = [], focalData = [], medications = [];
+
+function showLoading(msg) {
+  document.getElementById('loading-overlay').style.display = 'flex';
+  document.getElementById('loading-msg').textContent = msg;
+}
+function hideLoading() {
+  document.getElementById('loading-overlay').style.display = 'none';
+}
+function showError(msg) {
+  document.getElementById('loading-overlay').style.display = 'flex';
+  document.getElementById('loading-msg').innerHTML =
+    `<span style="color:#e74c3c">⚠ ${msg}</span><br><small style="opacity:0.6;font-size:12px;margin-top:8px;display:block">Make sure the sheet is shared as "Anyone with the link → Viewer"</small>`;
+}
+
+async function loadData() {
+  showLoading('Connecting to Google Sheets…');
+  try {
+    showLoading('Loading Daily Tracker…');
+    const r1 = await fetch(csvUrl('Daily Tracker'));
+    if (!r1.ok) throw new Error('Could not fetch Daily Tracker');
+    trackerData = parseTracker(parseCSV(await r1.text()));
+
+    showLoading('Loading Spasm Episodes…');
+    const r2 = await fetch(csvUrl('Spasms with head drops'));
+    if (!r2.ok) throw new Error('Could not fetch Spasm sheet');
+    spasmDetailData = parseSpasmDetail(parseCSV(await r2.text()));
+
+    showLoading('Loading Focal Seizures…');
+    const r3 = await fetch(csvUrl('Focal and other'));
+    if (!r3.ok) throw new Error('Could not fetch Focal sheet');
+    focalData = parseFocal(parseCSV(await r3.text()));
+
+    showLoading('Loading Medications…');
+    try {
+      const r4 = await fetch(csvUrl('Medications'));
+      if (r4.ok) {
+        const parsed = parseMedications(parseCSV(await r4.text()));
+        if (parsed.length) medications = parsed;
+        else throw new Error('empty');
+      } else throw new Error('no tab');
+    } catch(_) {
+      // Fallback: hardcoded medication events
+      medications = [
+        ["2025-02-07","Started cenobamate 190 mg"],
+        ["2025-02-14","Cenobamate → 195 mg"],
+        ["2025-02-24","Cenobamate → 200 mg"],
+        ["2025-07-23","Started Fintepla 1.1 ml BID"],
+        ["2025-07-30","Fintepla → 2.3 ml BID"],
+        ["2025-08-06","Fintepla → 4 ml BID"],
+        ["2025-10-14","Fintepla → 2.3 ml BID"],
+        ["2025-10-21","Fintepla → 1.1 ml BID"],
+        ["2025-10-28","Fintepla discontinued"],
+        ["2025-11-08","Started 5-MTHF trial"],
+        ["2026-02-14","Whole foods diet started"],
+        ["2026-03-01","Strict ketogenic diet started"],
+      ];
+    }
+
+    // Set date range to cover all data
+    if (trackerData.length) {
+      const dates = trackerData.map(r => r[0]).sort();
+      document.getElementById('dateFrom').value = dates[0];
+      document.getElementById('dateTo').value = dates[dates.length - 1];
+    }
+
+    hideLoading();
+    updateAll();
+  } catch(e) {
+    showError(e.message || 'Failed to load data from Google Sheets');
+  }
+}
+// ─────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────
+let currentAgg = 'daily';
+let chartInstances = {};
+let activeSeries = new Set(['confirmed','focal']);
+
+function parseDate(str) {
+  return new Date(str + 'T00:00:00');
+}
+
+function getRange() {
+  return {
+    from: new Date(document.getElementById('dateFrom').value + 'T00:00:00'),
+    to: new Date(document.getElementById('dateTo').value + 'T00:00:00'),
+  };
+}
+
+function filterByRange(data, dateIdx = 0) {
+  const { from, to } = getRange();
+  return data.filter(row => {
+    const d = parseDate(row[dateIdx]);
+    return d >= from && d <= to;
+  });
+}
+
+function getMonthKey(dateStr) {
+  return dateStr.slice(0, 7);
+}
+
+function getWeekKey(dateStr) {
+  const d = parseDate(dateStr);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(d.setDate(diff));
+  return mon.toISOString().slice(0, 10);
+}
+
+function destroyChart(id) {
+  if (chartInstances[id]) {
+    chartInstances[id].destroy();
+    delete chartInstances[id];
+  }
+}
+
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
+  updateAll();
+}
+
+function setRange(days) {
+  document.querySelectorAll('.date-range-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const to = new Date();
+  const from = new Date();
+  from.setDate(from.getDate() - days);
+  document.getElementById('dateTo').value = to.toISOString().slice(0,10);
+  document.getElementById('dateFrom').value = from.toISOString().slice(0,10);
+  updateAll();
+}
+
+function setAgg(agg) {
+  currentAgg = agg;
+  document.querySelectorAll('.agg-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('agg-' + agg).classList.add('active');
+  buildOverviewChart();
+}
+
+document.getElementById('dateFrom').addEventListener('change', updateAll);
+document.getElementById('dateTo').addEventListener('change', updateAll);
+
+// ─────────────────────────────────────────
+// AGGREGATE DATA FOR CHART
+// ─────────────────────────────────────────
+
+// Build a lookup: date string → number of confirmed spasm episodes
+function buildConfirmedByDate() {
+  const map = {};
+  spasmDetailData.forEach(r => {
+    const d = r[0]; // date string "YYYY-MM-DD"
+    map[d] = (map[d] || 0) + (r[2] || 0); // r[2] = spasm count per episode
+  });
+  return map;
+}
+
+function aggregateTracker(filtered) {
+  // trackerData columns:
+  // [0]date [1]col-C(unused/always 0) [2]confirmed_episodes(col D) [3]focal/other
+  // [4]energy [5]alertness [6]bowel [7]ketones [8]sugar [9]weight [10]diet
+  // [11]health_comment [12]life_event [13]sleep_start [14]sleep_end [15]night_wakings
+  // [16]sleep_duration [17]nap_hours [18]total_sleep [19]protest [20]spit
+  // [21]other_behav [22]total_behav [23]comments/illness
+  const isIll = r => r[23] === 'illness';
+  // Ketones: filter out urine strip readings (>10 mmol/L) — blood meter readings only
+  const parseNum = v => (v === '' || v == null) ? null : parseFloat(v);
+  const parseKetones = v => { const n = parseNum(v); return (n != null && n <= 10) ? n : null; };
+
+  if (currentAgg === 'daily') {
+    return {
+      labels:      filtered.map(r => r[0]),
+      confirmed:   filtered.map(r => r[2]),       // col D: confirmed episodes per day
+      focal:       filtered.map(r => r[3]),
+      energy:      filtered.map(r => r[4] || null),
+      alertness:   filtered.map(r => r[5] || null),
+      totalSleep:  filtered.map(r => r[18] || null),
+      wakings:     filtered.map(r => r[15] != null ? r[15] : null),
+      totalBehav:  filtered.map(r => r[22] || null),
+      protest:     filtered.map(r => r[19] || null),
+      spit:        filtered.map(r => r[20] || null),
+      ketones:     filtered.map(r => parseKetones(r[7])),
+      sugar:       filtered.map(r => parseNum(r[8])),
+      weight:      filtered.map(r => parseNum(r[9])),
+      illness:     filtered.map(r => isIll(r) ? 1 : 0),
+    };
+  }
+
+  const groups = {};
+  filtered.forEach(r => {
+    const key = currentAgg === 'weekly' ? getWeekKey(r[0]) : getMonthKey(r[0]);
+    if (!groups[key]) groups[key] = {
+      confirmed: 0, focal: 0,
+      energySum: 0, alertSum: 0, sleepSum: 0, wakingsSum: 0,
+      behavSum: 0, protestSum: 0, spitSum: 0,
+      ketonesSum: 0, ketonesN: 0, sugarSum: 0, sugarN: 0,
+      weightSum: 0, weightN: 0,
+      illness: 0, days: 0
+    };
+    groups[key].confirmed   += r[2];
+    groups[key].focal       += r[3];
+    groups[key].energySum   += r[4] || 0;
+    groups[key].alertSum    += r[5] || 0;
+    groups[key].sleepSum    += r[18] || 0;
+    groups[key].wakingsSum  += r[15] || 0;
+    groups[key].behavSum    += r[22] || 0;
+    groups[key].protestSum  += r[19] || 0;
+    groups[key].spitSum     += r[20] || 0;
+    const k = parseKetones(r[7]); if (k != null) { groups[key].ketonesSum += k; groups[key].ketonesN++; }
+    const s = parseNum(r[8]);     if (s != null) { groups[key].sugarSum   += s; groups[key].sugarN++; }
+    const w = parseNum(r[9]);     if (w != null) { groups[key].weightSum  += w; groups[key].weightN++; }
+    groups[key].illness     += isIll(r) ? 1 : 0;
+    groups[key].days++;
+  });
+  const keys = Object.keys(groups).sort();
+  const avg = (k, field) => groups[k].days ? +(groups[k][field] / groups[k].days).toFixed(2) : null;
+  const avgN = (k, sum, n) => groups[k][n] ? +(groups[k][sum] / groups[k][n]).toFixed(2) : null;
+  return {
+    labels:      keys,
+    confirmed:   keys.map(k => groups[k].confirmed),
+    focal:       keys.map(k => groups[k].focal),
+    energy:      keys.map(k => avg(k, 'energySum')),
+    alertness:   keys.map(k => avg(k, 'alertSum')),
+    totalSleep:  keys.map(k => avg(k, 'sleepSum')),
+    wakings:     keys.map(k => avg(k, 'wakingsSum')),
+    totalBehav:  keys.map(k => avg(k, 'behavSum')),
+    protest:     keys.map(k => avg(k, 'protestSum')),
+    spit:        keys.map(k => avg(k, 'spitSum')),
+    ketones:     keys.map(k => avgN(k, 'ketonesSum', 'ketonesN')),
+    sugar:       keys.map(k => avgN(k, 'sugarSum',   'sugarN')),
+    weight:      keys.map(k => avgN(k, 'weightSum',  'weightN')),
+    illness:     keys.map(k => groups[k].illness),
+  };
+}
+
+function toggleSeries(key, btn) {
+  if (activeSeries.has(key)) {
+    activeSeries.delete(key);
+    btn.classList.remove('active');
+  } else {
+    activeSeries.add(key);
+    btn.classList.add('active');
+  }
+  buildOverviewChart();
+}
+
+// ─────────────────────────────────────────
+// CHARTS
+// ─────────────────────────────────────────
+function buildOverviewChart() {
+  const filtered = filterByRange(trackerData, 0);
+  const agg = aggregateTracker(filtered);
+  const { from, to } = getRange();
+  destroyChart('overview');
+
+  const annotations = {};
+
+  // Medication vertical lines (if series active)
+  if (activeSeries.has('medications')) {
+    const filteredMeds = medications.filter(m => {
+      const d = parseDate(m[0]);
+      return d >= from && d <= to;
+    });
+    filteredMeds.forEach((m, i) => {
+      // Find label index closest to this date
+      const medDateStr = m[0]; // e.g. "2/7/2025" – need to normalise
+      const medDate = parseDate(medDateStr);
+      // Find the nearest label
+      let bestIdx = 0, bestDiff = Infinity;
+      agg.labels.forEach((lbl, idx) => {
+        const diff = Math.abs(parseDate(lbl) - medDate);
+        if (diff < bestDiff) { bestDiff = diff; bestIdx = idx; }
+      });
+      annotations['med' + i] = {
+        type: 'line',
+        xMin: bestIdx, xMax: bestIdx,
+        borderColor: 'rgba(39,174,96,0.75)',
+        borderWidth: 3,
+        borderDash: [5, 4],
+        label: {
+          display: true,
+          content: m[1],
+          position: 'end',
+          backgroundColor: 'rgba(39,174,96,0.92)',
+          color: 'white',
+          font: { size: 10, family: 'DM Sans' },
+          padding: { x: 6, y: 3 },
+          borderRadius: 4,
+          yAdjust: 8,
+        },
+      };
+    });
+  }
+
+  // Determine which y-axes are needed
+  const hasBar    = activeSeries.has('confirmed') || activeSeries.has('focal');
+  const hasLine   = activeSeries.has('totalSleep') || activeSeries.has('wakings') ||
+                    activeSeries.has('totalBehav') || activeSeries.has('protest') || activeSeries.has('spit');
+  const hasRating = activeSeries.has('energy') || activeSeries.has('alertness');
+  const hasLab    = activeSeries.has('ketones') || activeSeries.has('sugar') || activeSeries.has('weight');
+
+  // All series definitions
+  const allSeries = [
+    {
+      key: 'confirmed', label: 'Confirmed spasm episodes', type: 'bar',
+      data: agg.confirmed, backgroundColor: 'rgba(192,57,43,0.85)',
+      stack: 'seizures', borderRadius: 2, yAxisID: 'yBar', order: 10,
+    },
+    {
+      key: 'focal', label: 'Focal / other', type: 'bar',
+      data: agg.focal, backgroundColor: 'rgba(142,68,173,0.7)',
+      stack: 'seizures', borderRadius: 2, yAxisID: 'yBar', order: 10,
+    },
+    {
+      key: 'totalSleep', label: 'Total sleep (hrs)', type: 'line',
+      data: agg.totalSleep, borderColor: '#2980b9', backgroundColor: 'rgba(41,128,185,0.08)',
+      borderWidth: 2, pointRadius: 1.5, tension: 0.3, fill: false, yAxisID: 'yLine', order: 1,
+    },
+    {
+      key: 'wakings', label: 'Night wakings', type: 'line',
+      data: agg.wakings, borderColor: '#5dade2', backgroundColor: 'transparent',
+      borderWidth: 1.5, pointRadius: 1, tension: 0.3, fill: false,
+      borderDash: [4, 3], yAxisID: 'yLine', order: 1,
+    },
+    {
+      key: 'totalBehav', label: 'Total behaviors', type: 'line',
+      data: agg.totalBehav, borderColor: '#16a085', backgroundColor: 'rgba(22,160,133,0.06)',
+      borderWidth: 2, pointRadius: 1.5, tension: 0.3, fill: false, yAxisID: 'yLine', order: 1,
+    },
+    {
+      key: 'protest', label: 'Protesting', type: 'line',
+      data: agg.protest, borderColor: '#1abc9c', backgroundColor: 'transparent',
+      borderWidth: 1.5, pointRadius: 1, tension: 0.3, fill: false,
+      borderDash: [4, 3], yAxisID: 'yLine', order: 1,
+    },
+    {
+      key: 'spit', label: 'Spitting', type: 'line',
+      data: agg.spit, borderColor: '#48c9b0', backgroundColor: 'transparent',
+      borderWidth: 1.5, pointRadius: 1, tension: 0.3, fill: false,
+      borderDash: [2, 3], yAxisID: 'yLine', order: 1,
+    },
+    {
+      key: 'energy', label: 'Energy (1–5)', type: 'line',
+      data: agg.energy, borderColor: '#f39c12', backgroundColor: 'transparent',
+      borderWidth: 2, pointRadius: 1.5, tension: 0.4, fill: false, yAxisID: 'yRating', order: 2,
+    },
+    {
+      key: 'alertness', label: 'Alertness (1–5)', type: 'line',
+      data: agg.alertness, borderColor: '#d35400', backgroundColor: 'transparent',
+      borderWidth: 2, pointRadius: 1.5, tension: 0.4, fill: false,
+      borderDash: [5, 3], yAxisID: 'yRating', order: 2,
+    },
+    {
+      key: 'ketones', label: 'Ketones (mmol/L)', type: 'line',
+      data: agg.ketones, borderColor: '#7d3c98', backgroundColor: 'transparent',
+      borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false,
+      spanGaps: true, yAxisID: 'yLab', order: 2,
+    },
+    {
+      key: 'sugar', label: 'Blood sugar (mg/dL)', type: 'line',
+      data: agg.sugar, borderColor: '#e74c3c', backgroundColor: 'transparent',
+      borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false,
+      borderDash: [4, 3], spanGaps: true, yAxisID: 'yLab', order: 2,
+    },
+    {
+      key: 'weight', label: 'Weight (lbs)', type: 'line',
+      data: agg.weight, borderColor: '#5d6d7e', backgroundColor: 'transparent',
+      borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false,
+      borderDash: [2, 4], spanGaps: true, yAxisID: 'yLab', order: 2,
+    },
+  ];
+
+  const datasets = allSeries
+    .filter(s => activeSeries.has(s.key))
+    .map(({ key, ...rest }) => rest);
+
+  // Build scales dynamically
+  const usedAxes = new Set(datasets.map(d => d.yAxisID));
+  const rightAxes = [];
+  if (usedAxes.has('yBar'))    rightAxes.push('yBar');
+  if (usedAxes.has('yLine'))   rightAxes.push('yLine');
+  if (usedAxes.has('yRating')) rightAxes.push('yRating');
+  if (usedAxes.has('yLab'))    rightAxes.push('yLab');
+
+  const scales = {
+    x: {
+      grid: { display: false },
+      ticks: { maxTicksLimit: 20, font: { size: 10 }, color: '#9e9890' },
+    },
+  };
+
+  const axisConfigs = {
+    yBar: {
+      type: 'linear', stacked: true,
+      grid: { color: '#f0ede6' },
+      ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 1 },
+      title: { display: true, text: 'Count', font: { size: 10 }, color: '#9e9890' },
+    },
+    yLine: {
+      type: 'linear',
+      grid: { color: '#f0ede6' },
+      ticks: { font: { size: 10 }, color: '#9e9890' },
+      title: { display: true, text: 'Value', font: { size: 10 }, color: '#9e9890' },
+    },
+    yRating: {
+      type: 'linear', min: 0, max: 5,
+      grid: { color: '#f0ede6' },
+      ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 1 },
+      title: { display: true, text: '1–5', font: { size: 10 }, color: '#9e9890' },
+    },
+    yLab: {
+      type: 'linear',
+      grid: { color: '#f0ede6' },
+      ticks: { font: { size: 10 }, color: '#9e9890' },
+      title: { display: true, text: 'Lab value', font: { size: 10 }, color: '#9e9890' },
+    },
+  };
+
+  // Assign positions: first axis = left, rest = right, suppress grid for right axes
+  rightAxes.forEach((axisId, i) => {
+    const cfg = { ...axisConfigs[axisId] };
+    cfg.position = i === 0 ? 'left' : 'right';
+    if (i > 0) cfg.grid = { drawOnChartArea: false };
+    scales[axisId] = cfg;
+  });
+
+  chartInstances['overview'] = new Chart(document.getElementById('chart-overview'), {
+    data: { labels: agg.labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: datasets.length > 1,
+          position: 'top',
+          labels: { font: { size: 10 }, color: '#7a7268', boxWidth: 10, padding: 10 },
+        },
+        annotation: {
+          interaction: { mode: 'nearest' },
+          annotations,
+        },
+        tooltip: {
+          callbacks: {
+            afterBody: (items) => {
+              // Show med events on hover if active
+              if (!activeSeries.has('medications')) return;
+              const label = items[0]?.label;
+              const meds = medications.filter(m => {
+                const md = parseDate(m[0]);
+                const ld = parseDate(label);
+                return Math.abs(md - ld) < 86400000 * 3;
+              });
+              return meds.length ? ['', '💊 ' + meds.map(m => m[1]).join('\n💊 ')] : [];
+            }
+          }
+        }
+      },
+      scales,
+    },
+  });
+}
+
+function buildStats() {
+  const filtered = filterByRange(trackerData, 0);
+  const confirmedDays  = filtered.filter(r => r[2] > 0).length;  // col D: episodes > 0
+  const otherDays      = filtered.filter(r => r[3] > 0).length;
+  const behavAvg = (filtered.reduce((s, r) => s + (r[22] || 0), 0) / Math.max(filtered.length, 1)).toFixed(1);
+  const sleepAvg = (filtered.reduce((s, r) => s + (r[18] || 0), 0) / Math.max(filtered.length, 1)).toFixed(1);
+  document.getElementById('stat-confirmed').textContent = confirmedDays;
+  document.getElementById('stat-unconfirmed').textContent = '—';
+  document.getElementById('stat-focal').textContent = otherDays;
+  document.getElementById('stat-behavior').textContent = behavAvg;
+  document.getElementById('stat-sleep').textContent = sleepAvg + 'h';
+}
+
+function buildMedTimeline() {
+  const { from, to } = getRange();
+  const filtered = medications.filter(m => {
+    const d = parseDate(m[0]);
+    return d >= from && d <= to;
+  });
+  const el = document.getElementById('med-timeline');
+  if (filtered.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:12px;padding:12px 0">No medication events in this date range.</div>';
+    return;
+  }
+  el.innerHTML = filtered.map(m => `
+    <div class="med-event">
+      <div class="med-date">${m[0]}</div>
+      <div class="med-dot"></div>
+      <div class="med-text">${m[1]}</div>
+    </div>
+  `).join('');
+}
+
+function buildIllnessChart() {
+  const filtered = filterByRange(trackerData, 0);
+  const months = {};
+  filtered.forEach(r => {
+    const key = getMonthKey(r[0]);
+    if (!months[key]) months[key] = { seizure: 0, illness: 0 };
+    if (r[2] > 0 || r[1] > 0 || r[3] > 0) months[key].seizure++;
+    if (r[25] === 'illness') months[key].illness++;
+  });
+  const keys = Object.keys(months).sort();
+  destroyChart('illness');
+  chartInstances['illness'] = new Chart(document.getElementById('chart-illness'), {
+    type: 'bar',
+    data: {
+      labels: keys,
+      datasets: [
+        { label: 'Seizure days', data: keys.map(k => months[k].seizure), backgroundColor: 'rgba(192,57,43,0.7)', borderRadius: 3 },
+        { label: 'Illness noted days', data: keys.map(k => months[k].illness), backgroundColor: 'rgba(231,76,60,0.2)', borderColor: 'rgba(231,76,60,0.5)', borderWidth: 1, borderRadius: 3 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { font: { size: 10 }, color: '#7a7268', boxWidth: 10 } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890' } },
+        y: { grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, stepSize: 2, color: '#9e9890' } },
+      },
+    },
+  });
+}
+
+function buildSpasmDetailChart() {
+  const filtered = filterByRange(spasmDetailData, 0);
+  destroyChart('spasms-detail');
+  chartInstances['spasms-detail'] = new Chart(document.getElementById('chart-spasms-detail'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: '# of spasms',
+          data: filtered.map(r => ({ x: r[0], y: r[2] || 0 })),
+          backgroundColor: 'rgba(192,57,43,0.7)',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        },
+        {
+          label: 'Duration (min)',
+          data: filtered.map(r => ({ x: r[0], y: r[1] })),
+          backgroundColor: 'rgba(41,128,185,0.4)',
+          pointRadius: 4,
+          pointStyle: 'triangle',
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const row = filtered[ctx.dataIndex];
+              if (!row) return '';
+              return `${row[0]}: ${row[2]} spasms, ${row[1]}min, ${row[3]}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { type: 'category', grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890', maxTicksLimit: 15 } },
+        y: { grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 1 } },
+      },
+    },
+  });
+}
+
+function buildMonthlySpasmsChart() {
+  const filtered = filterByRange(spasmDetailData, 0);
+  const months = {};
+  filtered.forEach(r => {
+    const key = getMonthKey(r[0]);
+    if (!months[key]) months[key] = { events: 0, spasms: 0 };
+    months[key].events++;
+    months[key].spasms += r[2] || 0;
+  });
+  const keys = Object.keys(months).sort();
+  destroyChart('monthly-spasms');
+  chartInstances['monthly-spasms'] = new Chart(document.getElementById('chart-monthly-spasms'), {
+    type: 'bar',
+    data: {
+      labels: keys,
+      datasets: [
+        { label: 'Episodes', data: keys.map(k => months[k].events), backgroundColor: 'rgba(192,57,43,0.7)', borderRadius: 3 },
+        { label: 'Total spasms', data: keys.map(k => months[k].spasms), backgroundColor: 'rgba(192,57,43,0.25)', borderRadius: 3 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { font: { size: 10 }, color: '#7a7268', boxWidth: 10 } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890' } },
+        y: { grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, stepSize: 2, color: '#9e9890' } },
+      },
+    },
+  });
+}
+
+function buildIntervalChart() {
+  const filtered = filterByRange(spasmDetailData, 0);
+  const pairs = [];
+  for (let i = 1; i < filtered.length; i++) {
+    const a = parseDate(filtered[i-1][0]);
+    const b = parseDate(filtered[i][0]);
+    const diff = (b - a) / (1000 * 60 * 60 * 24);
+    pairs.push({ x: filtered[i][0], y: parseFloat(diff.toFixed(1)) });
+  }
+  destroyChart('interval');
+  chartInstances['interval'] = new Chart(document.getElementById('chart-interval'), {
+    type: 'line',
+    data: {
+      labels: pairs.map(p => p.x),
+      datasets: [{
+        label: 'Days since last episode',
+        data: pairs.map(p => p.y),
+        borderColor: 'rgba(41,128,185,0.7)',
+        backgroundColor: 'rgba(41,128,185,0.08)',
+        borderWidth: 1.5,
+        pointRadius: 3,
+        fill: true,
+        tension: 0.3,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890', maxTicksLimit: 12 } },
+        y: { grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, color: '#9e9890' }, title: { display: true, text: 'Days', font: { size: 10 }, color: '#9e9890' } },
+      },
+    },
+  });
+}
+
+function buildFocalChart() {
+  const { from, to } = getRange();
+  const filtered = focalData.filter(r => {
+    const d = parseDate(r[0]);
+    return d >= from && d <= to;
+  });
+  const monthGroups = {};
+  filtered.forEach(r => {
+    const key = getMonthKey(r[0]);
+    if (!monthGroups[key]) monthGroups[key] = { focal: 0, convulsions: 0 };
+    monthGroups[key].focal++;
+    if (r[3] === 'WITH CONVULSIONS') monthGroups[key].convulsions++;
+  });
+  const keys = Object.keys(monthGroups).sort();
+  destroyChart('focal');
+  chartInstances['focal'] = new Chart(document.getElementById('chart-focal'), {
+    type: 'bar',
+    data: {
+      labels: keys,
+      datasets: [
+        { label: 'Focal events', data: keys.map(k => monthGroups[k].focal), backgroundColor: 'rgba(142,68,173,0.6)', borderRadius: 3 },
+        { label: 'With convulsions', data: keys.map(k => monthGroups[k].convulsions), backgroundColor: 'rgba(192,57,43,0.8)', borderRadius: 3 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { font: { size: 10 }, color: '#7a7268', boxWidth: 10 } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890' } },
+        y: { grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, stepSize: 1, color: '#9e9890' } },
+      },
+    },
+  });
+}
+
+function buildBehaviorChart() {
+  const filtered = filterByRange(trackerData, 0);
+  destroyChart('behavior');
+  chartInstances['behavior'] = new Chart(document.getElementById('chart-behavior'), {
+    type: 'bar',
+    data: {
+      labels: filtered.map(r => r[0]),
+      datasets: [
+        { label: 'Protesting', data: filtered.map(r => r[19] || 0), backgroundColor: 'rgba(231,76,60,0.75)', stack: 'b', borderRadius: 1 },
+        { label: 'Spitting/licking', data: filtered.map(r => r[20] || 0), backgroundColor: 'rgba(230,126,34,0.65)', stack: 'b', borderRadius: 1 },
+        { label: 'Other', data: filtered.map(r => r[21] || 0), backgroundColor: 'rgba(149,165,166,0.6)', stack: 'b', borderRadius: 1 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890', maxTicksLimit: 20 } },
+        y: { stacked: true, grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 5 } },
+      },
+    },
+  });
+}
+
+function buildSleepChart() {
+  const filtered = filterByRange(trackerData, 0);
+  destroyChart('sleep');
+  chartInstances['sleep'] = new Chart(document.getElementById('chart-sleep'), {
+    type: 'bar',
+    data: {
+      labels: filtered.map(r => r[0]),
+      datasets: [
+        { label: 'Total sleep hours', data: filtered.map(r => r[18] || 0), backgroundColor: 'rgba(41,128,185,0.55)', borderRadius: 2 },
+        { label: 'Night wakings', data: filtered.map(r => r[15] || 0), type: 'line', borderColor: 'rgba(230,126,34,0.8)', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 2, yAxisID: 'y2' },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890', maxTicksLimit: 20 } },
+        y: { grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, color: '#9e9890' }, min: 0, max: 14 },
+        y2: { position: 'right', grid: { display: false }, ticks: { font: { size: 10 }, color: '#e67e22' }, min: 0, max: 5 },
+      },
+    },
+  });
+}
+
+function buildEnergyChart() {
+  const filtered = filterByRange(trackerData, 0);
+  destroyChart('energy');
+  chartInstances['energy'] = new Chart(document.getElementById('chart-energy'), {
+    type: 'line',
+    data: {
+      labels: filtered.map(r => r[0]),
+      datasets: [
+        { label: 'Energy', data: filtered.map(r => r[4] || null), borderColor: 'rgba(39,174,96,0.8)', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.4 },
+        { label: 'Alertness', data: filtered.map(r => r[5] || null), borderColor: 'rgba(41,128,185,0.8)', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, tension: 0.4 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#9e9890', maxTicksLimit: 15 } },
+        y: { grid: { color: '#f0ede6' }, ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 1 }, min: 0, max: 5 },
+      },
+    },
+  });
+}
+
+function buildSpasmsTable() {
+  const filtered = filterByRange(spasmDetailData, 0);
+  const table = document.getElementById('table-spasms');
+  table.innerHTML = `
+    <thead><tr>
+      <th>Date</th><th>Duration (min)</th><th># Spasms</th><th>Location</th><th>Notes</th>
+    </tr></thead>
+    <tbody>
+      ${filtered.reverse().map(r => `
+        <tr>
+          <td>${r[0]}</td>
+          <td>${r[1]}</td>
+          <td><span class="badge badge-red">${r[2] ?? '?'}</span></td>
+          <td style="color:var(--text-muted)">${r[3]}</td>
+          <td style="max-width:300px">${r[4]}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+}
+
+function buildFocalTable() {
+  const { from, to } = getRange();
+  const filtered = focalData.filter(r => {
+    const d = parseDate(r[0]);
+    return d >= from && d <= to;
+  });
+  const table = document.getElementById('table-focal');
+  table.innerHTML = `
+    <thead><tr>
+      <th>Date</th><th>Type</th><th>Description</th><th>Severity</th>
+    </tr></thead>
+    <tbody>
+      ${filtered.reverse().map(r => `
+        <tr>
+          <td>${r[0]}</td>
+          <td><span class="badge badge-purple">${r[1]}</span></td>
+          <td style="max-width:350px;font-size:11px">${r[2]}</td>
+          <td>${r[3] === 'WITH CONVULSIONS' ? '<span class="badge badge-red">Convulsions</span>' : '<span style="color:var(--text-muted);font-size:11px">—</span>'}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+}
+
+// ─────────────────────────────────────────
+// MAIN UPDATE
+// ─────────────────────────────────────────
+function updateAll() {
+  buildStats();
+  buildOverviewChart();
+  buildSpasmDetailChart();
+  buildMonthlySpasmsChart();
+  buildIntervalChart();
+  buildFocalChart();
+  buildBehaviorChart();
+  buildSleepChart();
+  buildEnergyChart();
+  buildSpasmsTable();
+  buildFocalTable();
+}
+
+loadData();
+</script>
+</body>
+</html>
