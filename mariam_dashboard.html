@@ -1566,7 +1566,12 @@ function buildLocationsChart() {
     return `rgba(192,57,43,${intensity.toFixed(2)})`;
   });
 
+  // Set height and recreate canvas BEFORE creating the chart to avoid sizing issues
+  const wrap = document.getElementById('chart-locations').parentElement;
+  wrap.style.height = Math.max(160, labels.length * 36) + 'px';
   destroyChart('locations');
+  wrap.innerHTML = '<canvas id="chart-locations"></canvas>';
+
   chartInstances['locations'] = new Chart(document.getElementById('chart-locations'), {
     type: 'bar',
     data: {
@@ -1579,7 +1584,7 @@ function buildLocationsChart() {
       }],
     },
     options: {
-      indexAxis: 'y',   // horizontal bars — easier to read long location names
+      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -1599,10 +1604,6 @@ function buildLocationsChart() {
       },
     },
   });
-
-  // Adjust canvas height dynamically based on number of locations
-  const canvas = document.getElementById('chart-locations');
-  canvas.parentElement.style.height = Math.max(160, labels.length * 36) + 'px';
 }
 
 
