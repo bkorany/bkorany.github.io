@@ -1560,7 +1560,7 @@ function buildLocationsChart() {
   const data   = sorted.map(e => e[1]);
 
   // Color scale: darker red for higher counts
-  const max = Math.max(...data, 1);
+  const max = data.reduce((a, b) => Math.max(a, b), 1);
   const colors = data.map(v => {
     const intensity = 0.3 + 0.6 * (v / max);
     return `rgba(192,57,43,${intensity.toFixed(2)})`;
@@ -1781,18 +1781,16 @@ function buildFocalTable() {
 // MAIN UPDATE
 // ─────────────────────────────────────────
 function updateAll() {
-  buildStats();
-  buildOverviewChart();
-  buildSpasmDetailChart();
-  buildMonthlySpasmsChart();
-  buildIntervalChart();
-  buildLocationsChart();
-  buildFocalChart();
-  buildBehaviorChart();
-  buildSleepChart();
-  buildEnergyChart();
-  buildSpasmsTable();
-  buildFocalTable();
+  const fns = [
+    buildStats, buildOverviewChart, buildSpasmDetailChart,
+    buildMonthlySpasmsChart, buildIntervalChart, buildLocationsChart,
+    buildFocalChart, buildBehaviorChart, buildSleepChart,
+    buildEnergyChart, buildSpasmsTable, buildFocalTable
+  ];
+  fns.forEach(fn => {
+    try { fn(); }
+    catch(e) { console.error(fn.name + ' failed:', e); }
+  });
 }
 
 loadData();
