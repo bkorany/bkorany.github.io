@@ -532,14 +532,14 @@
   <div class="panel active" id="panel-overview">
     <div class="summary-row">
       <div class="stat-card red">
-        <div class="label">Confirmed Spasms (days)</div>
+        <div class="label">Confirmed Spasm Episodes</div>
         <div class="value" id="stat-confirmed">—</div>
-        <div class="sub">days with ≥1 confirmed spasm</div>
+        <div class="sub" id="stat-confirmed-sub">in selected range</div>
       </div>
       <div class="stat-card purple">
         <div class="label">Focal / Other Events</div>
         <div class="value" id="stat-focal">—</div>
-        <div class="sub">days with focal/other seizure activity</div>
+        <div class="sub" id="stat-focal-sub">in selected range</div>
       </div>
       <div class="stat-card teal">
         <div class="label">Avg Behavior Score</div>
@@ -1333,12 +1333,33 @@ function buildOverviewChart() {
 
 function buildStats() {
   const filtered = filterByRange(trackerData, 0);
-  const confirmedDays  = filtered.filter(r => r[2] > 0).length;  // col D: episodes > 0
-  const otherDays      = filtered.filter(r => r[3] > 0).length;
+  const { from, to } = getRange();
+  const totalDays = Math.max(1, Math.round((to - from) / 86400000) + 1);
+
+  // Total confirmed spasm episodes (sum of col D across all days)
+  const totalConfirmed = filtered.reduce((s, r) => s + (r[2] || 0), 0);
+  // Total focal events (count of rows in focalData in range)
+  const totalFocal = focalData.filter(r => {
+    const d = parseDate(r[0]);
+    return d >= from && d <= to;
+  }).length;
+
   const behavAvg = (filtered.reduce((s, r) => s + (r[22] || 0), 0) / Math.max(filtered.length, 1)).toFixed(1);
   const sleepAvg = (filtered.reduce((s, r) => s + (r[18] || 0), 0) / Math.max(filtered.length, 1)).toFixed(1);
-  document.getElementById('stat-confirmed').textContent = confirmedDays;
-  document.getElementById('stat-focal').textContent = otherDays;
+
+  // Frequency strings
+  const freqStr = (total) => {
+    if (total === 0) return 'no episodes in range';
+    const perDay = total / totalDays;
+    if (perDay >= 1) return `${perDay.toFixed(1)} episodes/day`;
+    const interval = Math.round(totalDays / total);
+    return `1 episode every ${interval} day${interval !== 1 ? 's' : ''}`;
+  };
+
+  document.getElementById('stat-confirmed').textContent = totalConfirmed;
+  document.getElementById('stat-confirmed-sub').textContent = freqStr(totalConfirmed);
+  document.getElementById('stat-focal').textContent = totalFocal;
+  document.getElementById('stat-focal-sub').textContent = freqStr(totalFocal);
   document.getElementById('stat-behavior').textContent = behavAvg;
   document.getElementById('stat-sleep').textContent = sleepAvg + 'h';
 }
