@@ -501,7 +501,7 @@
 
 <header>
   <div>
-    <h1>Mariam — Health & Seizure Dashboard</h1>
+    <h1>Mariam Amin — Health & Seizure Dashboard</h1>
     <p>Live data · Google Sheets · Refreshes on open</p>
   </div>
   <div class="header-meta">
@@ -536,11 +536,6 @@
         <div class="value" id="stat-confirmed">—</div>
         <div class="sub">days with ≥1 confirmed spasm</div>
       </div>
-      <div class="stat-card orange">
-        <div class="label">Unconfirmed Spasms (days)</div>
-        <div class="value" id="stat-unconfirmed">—</div>
-        <div class="sub">days with non-drop spasm activity</div>
-      </div>
       <div class="stat-card purple">
         <div class="label">Focal / Other Events</div>
         <div class="value" id="stat-focal">—</div>
@@ -563,7 +558,7 @@
         <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
           <div>
             <h3>Overview Chart</h3>
-            <div class="chart-sub">Select metrics below · shaded areas = illness periods</div>
+            <div class="chart-sub">Select metrics below</div>
           </div>
           <div style="display:flex;gap:4px;margin-top:2px;">
             <button class="agg-btn active" id="agg-daily" onclick="setAgg('daily')">Daily</button>
@@ -1194,69 +1189,69 @@ function buildOverviewChart() {
     {
       key: 'confirmed', label: 'Confirmed spasm episodes', type: 'bar',
       data: agg.confirmed, backgroundColor: 'rgba(192,57,43,0.85)',
-      stack: 'seizures', borderRadius: 2, yAxisID: 'yBar', order: 10,
+      stack: 'seizures', borderRadius: 2, yAxisID: 'yCount', order: 10,
     },
     {
       key: 'focal', label: 'Focal / other', type: 'bar',
       data: agg.focal, backgroundColor: 'rgba(142,68,173,0.7)',
-      stack: 'seizures', borderRadius: 2, yAxisID: 'yBar', order: 10,
+      stack: 'seizures', borderRadius: 2, yAxisID: 'yCount', order: 10,
     },
     {
       key: 'totalSleep', label: 'Total sleep (hrs)', type: 'line',
       data: agg.totalSleep, borderColor: '#2980b9', backgroundColor: 'rgba(41,128,185,0.08)',
-      borderWidth: 2, pointRadius: 1.5, tension: 0.3, fill: false, yAxisID: 'yLine', order: 1,
+      borderWidth: 2, pointRadius: 1.5, tension: 0.3, fill: false, yAxisID: 'yHours', order: 1,
     },
     {
       key: 'wakings', label: 'Night wakings', type: 'line',
       data: agg.wakings, borderColor: '#5dade2', backgroundColor: 'transparent',
       borderWidth: 1.5, pointRadius: 1, tension: 0.3, fill: false,
-      borderDash: [4, 3], yAxisID: 'yLine', order: 1,
+      borderDash: [4, 3], yAxisID: 'yHours', order: 1,
     },
     {
       key: 'totalBehav', label: 'Total behaviors', type: 'line',
       data: agg.totalBehav, borderColor: '#16a085', backgroundColor: 'rgba(22,160,133,0.06)',
-      borderWidth: 2, pointRadius: 1.5, tension: 0.3, fill: false, yAxisID: 'yLine', order: 1,
+      borderWidth: 2, pointRadius: 1.5, tension: 0.3, fill: false, yAxisID: 'yCount', order: 1,
     },
     {
       key: 'protest', label: 'Protesting', type: 'line',
       data: agg.protest, borderColor: '#1abc9c', backgroundColor: 'transparent',
       borderWidth: 1.5, pointRadius: 1, tension: 0.3, fill: false,
-      borderDash: [4, 3], yAxisID: 'yLine', order: 1,
+      borderDash: [4, 3], yAxisID: 'yCount', order: 1,
     },
     {
       key: 'spit', label: 'Spitting', type: 'line',
       data: agg.spit, borderColor: '#48c9b0', backgroundColor: 'transparent',
       borderWidth: 1.5, pointRadius: 1, tension: 0.3, fill: false,
-      borderDash: [2, 3], yAxisID: 'yLine', order: 1,
+      borderDash: [2, 3], yAxisID: 'yCount', order: 1,
     },
     {
-      key: 'energy', label: 'Energy (1–5)', type: 'line',
+      key: 'energy', label: 'Energy', type: 'line',
       data: agg.energy, borderColor: '#f39c12', backgroundColor: 'transparent',
-      borderWidth: 2, pointRadius: 1.5, tension: 0.4, fill: false, yAxisID: 'yRating', order: 2,
+      borderWidth: 2, pointRadius: 1.5, tension: 0.4, fill: false, yAxisID: 'yScore', order: 2,
     },
     {
-      key: 'alertness', label: 'Alertness (1–5)', type: 'line',
+      key: 'alertness', label: 'Alertness', type: 'line',
       data: agg.alertness, borderColor: '#d35400', backgroundColor: 'transparent',
       borderWidth: 2, pointRadius: 1.5, tension: 0.4, fill: false,
-      borderDash: [5, 3], yAxisID: 'yRating', order: 2,
+      borderDash: [5, 3], yAxisID: 'yScore', order: 2,
     },
     {
       key: 'ketones', label: 'Ketones (mmol/L)', type: 'line',
       data: agg.ketones, borderColor: '#7d3c98', backgroundColor: 'transparent',
       borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false,
-      spanGaps: true, yAxisID: 'yLab', order: 2,
+      spanGaps: true, yAxisID: 'yKetones', order: 2,
     },
     {
       key: 'sugar', label: 'Blood sugar (mg/dL)', type: 'line',
       data: agg.sugar, borderColor: '#e74c3c', backgroundColor: 'transparent',
       borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false,
-      borderDash: [4, 3], spanGaps: true, yAxisID: 'yLab', order: 2,
+      borderDash: [4, 3], spanGaps: true, yAxisID: 'ySugar', order: 2,
     },
     {
       key: 'weight', label: 'Weight (lbs)', type: 'line',
       data: agg.weight, borderColor: '#5d6d7e', backgroundColor: 'transparent',
       borderWidth: 2, pointRadius: 2, tension: 0.3, fill: false,
-      borderDash: [2, 4], spanGaps: true, yAxisID: 'yLab', order: 2,
+      borderDash: [2, 4], spanGaps: true, yAxisID: 'yWeight', order: 2,
     },
   ];
 
@@ -1264,13 +1259,20 @@ function buildOverviewChart() {
     .filter(s => activeSeries.has(s.key))
     .map(({ key, ...rest }) => rest);
 
-  // Build scales dynamically
+  // Build scales: one per unit, only for axes actually in use
   const usedAxes = new Set(datasets.map(d => d.yAxisID));
-  const rightAxes = [];
-  if (usedAxes.has('yBar'))    rightAxes.push('yBar');
-  if (usedAxes.has('yLine'))   rightAxes.push('yLine');
-  if (usedAxes.has('yRating')) rightAxes.push('yRating');
-  if (usedAxes.has('yLab'))    rightAxes.push('yLab');
+
+  const axisConfigs = {
+    yCount:   { label: 'Count',    stacked: true,  color: '#9e9890', stepSize: 1 },
+    yHours:   { label: 'Hours',    stacked: false, color: '#2980b9' },
+    yScore:   { label: 'Score',    stacked: false, color: '#f39c12', min: 0, max: 5, stepSize: 1 },
+    yKetones: { label: 'mmol/L',   stacked: false, color: '#7d3c98' },
+    ySugar:   { label: 'mg/dL',    stacked: false, color: '#e74c3c' },
+    yWeight:  { label: 'lbs',      stacked: false, color: '#5d6d7e' },
+  };
+
+  // Assign left to first active axis, right to rest
+  const activeAxes = ['yCount','yHours','yScore','yKetones','ySugar','yWeight'].filter(a => usedAxes.has(a));
 
   const scales = {
     x: {
@@ -1279,39 +1281,18 @@ function buildOverviewChart() {
     },
   };
 
-  const axisConfigs = {
-    yBar: {
-      type: 'linear', stacked: true,
-      grid: { color: '#f0ede6' },
-      ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 1 },
-      title: { display: true, text: 'Count', font: { size: 10 }, color: '#9e9890' },
-    },
-    yLine: {
+  activeAxes.forEach((axisId, i) => {
+    const cfg = axisConfigs[axisId];
+    scales[axisId] = {
       type: 'linear',
-      grid: { color: '#f0ede6' },
-      ticks: { font: { size: 10 }, color: '#9e9890' },
-      title: { display: true, text: 'Value', font: { size: 10 }, color: '#9e9890' },
-    },
-    yRating: {
-      type: 'linear', min: 0, max: 5,
-      grid: { color: '#f0ede6' },
-      ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 1 },
-      title: { display: true, text: '1–5', font: { size: 10 }, color: '#9e9890' },
-    },
-    yLab: {
-      type: 'linear',
-      grid: { color: '#f0ede6' },
-      ticks: { font: { size: 10 }, color: '#9e9890' },
-      title: { display: true, text: 'Lab value', font: { size: 10 }, color: '#9e9890' },
-    },
-  };
-
-  // Assign positions: first axis = left, rest = right, suppress grid for right axes
-  rightAxes.forEach((axisId, i) => {
-    const cfg = { ...axisConfigs[axisId] };
-    cfg.position = i === 0 ? 'left' : 'right';
-    if (i > 0) cfg.grid = { drawOnChartArea: false };
-    scales[axisId] = cfg;
+      position: i === 0 ? 'left' : 'right',
+      stacked: cfg.stacked || false,
+      grid: i === 0 ? { color: '#f0ede6' } : { drawOnChartArea: false },
+      ticks: { font: { size: 10 }, color: cfg.color, stepSize: cfg.stepSize },
+      ...(cfg.min != null ? { min: cfg.min } : {}),
+      ...(cfg.max != null ? { max: cfg.max } : {}),
+      title: { display: true, text: cfg.label, font: { size: 10 }, color: cfg.color },
+    };
   });
 
   chartInstances['overview'] = new Chart(document.getElementById('chart-overview'), {
