@@ -1607,6 +1607,7 @@ function buildLocationsChart() {
 }
 
 
+function buildFocalChart() {
   const { from, to } = getRange();
   const filtered = focalData.filter(r => {
     const d = parseDate(r[0]);
