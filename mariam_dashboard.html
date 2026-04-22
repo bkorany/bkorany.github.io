@@ -842,13 +842,25 @@ function parseSpasmDetail(rows) {
   }).filter(Boolean);
 }
 
-// focalData: [date, type, description, severity]
+// focalData: [date, duration, eyeDeviation, unresponsive, retching, vomiting, convulsions, description]
+// Sheet cols: r[0]=datetime, r[1]=duration, r[2]=eye_deviation, r[3]=unresponsive,
+//   r[4]=retching, r[5]=vomiting, r[6]=convulsions, r[7]=description
 function parseFocal(rows) {
+  const toBool = v => v === 'TRUE' || v === true || v === '1' || v === 'true';
   return rows.slice(1).map(r => {
     const date = toISO(r[0]);
     if (!date) return null;
-    return [date, r[1] || '', r[2] || '', r[3] || ''];
-  }).filter(Boolean);
+    return [
+      date,
+      toNum(r[1]),      // duration (min)
+      toBool(r[2]),     // eye deviation
+      toBool(r[3]),     // unresponsive
+      toBool(r[4]),     // retching
+      toBool(r[5]),     // vomiting
+      toBool(r[6]),     // convulsions
+      r[7] || '',       // description
+    ];
+  }).filter(r => r && r[0]);
 }
 
 // medications: [date_string, description]  (kept as original M/D/YYYY for display)
@@ -1527,9 +1539,10 @@ function buildFocalChart() {
   const monthGroups = {};
   filtered.forEach(r => {
     const key = getMonthKey(r[0]);
-    if (!monthGroups[key]) monthGroups[key] = { focal: 0, convulsions: 0 };
+    if (!monthGroups[key]) monthGroups[key] = { focal: 0, vomiting: 0, convulsions: 0 };
     monthGroups[key].focal++;
-    if (r[3] === 'WITH CONVULSIONS') monthGroups[key].convulsions++;
+    if (r[5]) monthGroups[key].vomiting++;   // vomiting
+    if (r[6]) monthGroups[key].convulsions++; // convulsions
   });
   const keys = Object.keys(monthGroups).sort();
   destroyChart('focal');
@@ -1538,8 +1551,9 @@ function buildFocalChart() {
     data: {
       labels: keys,
       datasets: [
-        { label: 'Focal events', data: keys.map(k => monthGroups[k].focal), backgroundColor: 'rgba(142,68,173,0.6)', borderRadius: 3 },
-        { label: 'With convulsions', data: keys.map(k => monthGroups[k].convulsions), backgroundColor: 'rgba(192,57,43,0.8)', borderRadius: 3 },
+        { label: 'Focal events', data: keys.map(k => monthGroups[k].focal), backgroundColor: 'rgba(142,68,173,0.55)', borderRadius: 3 },
+        { label: 'With vomiting', data: keys.map(k => monthGroups[k].vomiting), backgroundColor: 'rgba(230,126,34,0.75)', borderRadius: 3 },
+        { label: 'With convulsions', data: keys.map(k => monthGroups[k].convulsions), backgroundColor: 'rgba(192,57,43,0.85)', borderRadius: 3 },
       ],
     },
     options: {
@@ -1655,20 +1669,34 @@ function buildFocalTable() {
     const d = parseDate(r[0]);
     return d >= from && d <= to;
   });
+
+  const badge = (label, color) => `<span class="badge" style="background:${color};color:white;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500;white-space:nowrap">${label}</span>`;
+
   const table = document.getElementById('table-focal');
   table.innerHTML = `
     <thead><tr>
-      <th>Date</th><th>Type</th><th>Description</th><th>Severity</th>
+      <th>Date</th><th>Duration</th><th>Symptoms</th><th>Severity</th><th>Description</th>
     </tr></thead>
     <tbody>
-      ${filtered.reverse().map(r => `
-        <tr>
-          <td>${r[0]}</td>
-          <td><span class="badge badge-purple">${r[1]}</span></td>
-          <td style="max-width:350px;font-size:11px">${r[2]}</td>
-          <td>${r[3] === 'WITH CONVULSIONS' ? '<span class="badge badge-red">Convulsions</span>' : '<span style="color:var(--text-muted);font-size:11px">—</span>'}</td>
-        </tr>
-      `).join('')}
+      ${[...filtered].reverse().map(r => {
+        const symptoms = [];
+        if (r[2]) symptoms.push(badge('Eye deviation', '#8e44ad'));
+        if (r[3]) symptoms.push(badge('Unresponsive', '#2980b9'));
+        if (r[4]) symptoms.push(badge('Retching', '#e67e22'));
+
+        let severity;
+        if (r[6]) severity = badge('Convulsions', '#c0392b');
+        else if (r[5]) severity = badge('Vomiting', '#e67e22');
+        else severity = '<span style="color:var(--text-muted);font-size:11px">Mild</span>';
+
+        return `<tr>
+          <td style="white-space:nowrap">${r[0]}</td>
+          <td style="white-space:nowrap">${r[1] ? r[1] + ' min' : '—'}</td>
+          <td style="display:flex;flex-wrap:wrap;gap:3px;padding:4px 0">${symptoms.join('') || '<span style="color:var(--text-muted);font-size:11px">—</span>'}</td>
+          <td>${severity}</td>
+          <td style="max-width:320px;font-size:11px;color:var(--text-muted)">${r[7] || '—'}</td>
+        </tr>`;
+      }).join('')}
     </tbody>
   `;
 }
