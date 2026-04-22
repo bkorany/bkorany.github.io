@@ -662,6 +662,13 @@
     </div>
     <div class="chart-grid full">
       <div class="chart-card">
+        <h3>Seizure Locations</h3>
+        <div class="chart-sub">Number of confirmed spasm episodes by location</div>
+        <div class="chart-wrap"><canvas id="chart-locations"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-grid full">
+      <div class="chart-card">
         <h3>Focal Seizure Events</h3>
         <div class="chart-sub">Timeline with symptom flags (eye deviation, vomiting, convulsions)</div>
         <div class="chart-wrap"><canvas id="chart-focal"></canvas></div>
@@ -1533,7 +1540,72 @@ function buildIntervalChart() {
   });
 }
 
-function buildFocalChart() {
+function buildLocationsChart() {
+  const { from, to } = getRange();
+  const filtered = spasmDetailData.filter(r => {
+    const d = parseDate(r[0]);
+    return d >= from && d <= to && r[3] && r[3].trim() !== '';
+  });
+
+  // Count episodes per location
+  const counts = {};
+  filtered.forEach(r => {
+    const loc = r[3].trim();
+    counts[loc] = (counts[loc] || 0) + 1;
+  });
+
+  // Sort by count descending
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const labels = sorted.map(e => e[0]);
+  const data   = sorted.map(e => e[1]);
+
+  // Color scale: darker red for higher counts
+  const max = Math.max(...data, 1);
+  const colors = data.map(v => {
+    const intensity = 0.3 + 0.6 * (v / max);
+    return `rgba(192,57,43,${intensity.toFixed(2)})`;
+  });
+
+  destroyChart('locations');
+  chartInstances['locations'] = new Chart(document.getElementById('chart-locations'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Episodes',
+        data,
+        backgroundColor: colors,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      indexAxis: 'y',   // horizontal bars — easier to read long location names
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} episode${ctx.parsed.x !== 1 ? 's' : ''}` } },
+      },
+      scales: {
+        x: {
+          grid: { color: '#f0ede6' },
+          ticks: { font: { size: 10 }, color: '#9e9890', stepSize: 1 },
+          title: { display: true, text: 'Episodes', font: { size: 10 }, color: '#9e9890' },
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 11 }, color: '#4a4540' },
+        },
+      },
+    },
+  });
+
+  // Adjust canvas height dynamically based on number of locations
+  const canvas = document.getElementById('chart-locations');
+  canvas.parentElement.style.height = Math.max(160, labels.length * 36) + 'px';
+}
+
+
   const { from, to } = getRange();
   const filtered = focalData.filter(r => {
     const d = parseDate(r[0]);
@@ -1713,6 +1785,7 @@ function updateAll() {
   buildSpasmDetailChart();
   buildMonthlySpasmsChart();
   buildIntervalChart();
+  buildLocationsChart();
   buildFocalChart();
   buildBehaviorChart();
   buildSleepChart();
