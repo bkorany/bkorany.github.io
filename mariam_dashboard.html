@@ -1338,7 +1338,6 @@ function buildStats() {
   const behavAvg = (filtered.reduce((s, r) => s + (r[22] || 0), 0) / Math.max(filtered.length, 1)).toFixed(1);
   const sleepAvg = (filtered.reduce((s, r) => s + (r[18] || 0), 0) / Math.max(filtered.length, 1)).toFixed(1);
   document.getElementById('stat-confirmed').textContent = confirmedDays;
-  document.getElementById('stat-unconfirmed').textContent = '—';
   document.getElementById('stat-focal').textContent = otherDays;
   document.getElementById('stat-behavior').textContent = behavAvg;
   document.getElementById('stat-sleep').textContent = sleepAvg + 'h';
