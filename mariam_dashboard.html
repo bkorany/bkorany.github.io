@@ -777,7 +777,7 @@ function toNum(v) {
 
 function toISO(v) {
   if (!v) return null;
-  // Handle "M/D/YYYY" → "YYYY-MM-DD"
+  // Handle "M/D/YYYY" or "M/D/YYYY H:MM AM/PM" → "YYYY-MM-DD"
   const m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
   if (m) return `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
   // Already ISO
@@ -793,12 +793,19 @@ function toISO(v) {
 //   night_wakings, sleep_duration, nap_hours, total_sleep, protest, spit, other_behav,
 //   total_behav, comments/illness]
 function parseTracker(rows) {
+  // Row 0 = header, Row 1+ = data
+  // Columns: r[0]=day-of-week, r[1]=date, r[2]=unconfirmed, r[3]=confirmed(col D),
+  //   r[4]=focal, r[5]=energy, r[6]=alertness, r[7]=bowel, r[8]=ketones, r[9]=sugar,
+  //   r[10]=weight, r[11]=diet, r[12]=health_comment, r[13]=life_event, r[14]=empty,
+  //   r[15]=sleep_start, r[16]=sleep_end, r[17]=night_wakings, r[18]=sleep_duration,
+  //   r[19]=nap_hours, r[20]=total_sleep, r[21]=empty, r[22]=protest, r[23]=spit,
+  //   r[24]=other_behav, r[25]=total_behav, r[26]=comments/illness
   return rows.slice(1).map(r => {
-    const date = toISO(r[0]);
+    const date = toISO(r[1]);
     if (!date) return null;
     return [
       date,
-      toNum(r[2]),   // col C (unused)
+      toNum(r[2]),   // col C: unconfirmed (unused in overview)
       toNum(r[3]),   // col D: confirmed episodes
       toNum(r[4]),   // col E: focal/other
       toNum(r[5]),   // energy
@@ -810,27 +817,28 @@ function parseTracker(rows) {
       r[11] || '',   // diet
       r[12] || '',   // health_comment
       r[13] || '',   // life_event
-      r[14] || '',   // sleep_start
-      r[15] || '',   // sleep_end
-      toNum(r[16]),  // night_wakings
-      toNum(r[17]),  // sleep_duration
-      toNum(r[18]),  // nap_hours
-      toNum(r[19]),  // total_sleep
-      toNum(r[20]),  // protest
-      toNum(r[21]),  // spit
-      toNum(r[22]),  // other_behav
-      toNum(r[23]),  // total_behav
-      r[24] || '',   // comments / illness flag
+      r[15] || '',   // sleep_start (skip r[14] empty col)
+      r[16] || '',   // sleep_end
+      toNum(r[17]),  // night_wakings
+      toNum(r[18]),  // sleep_duration
+      toNum(r[19]),  // nap_hours
+      toNum(r[20]),  // total_sleep
+      toNum(r[22]),  // protest (skip r[21] empty col)
+      toNum(r[23]),  // spit
+      toNum(r[24]),  // other_behav
+      toNum(r[25]),  // total_behav
+      r[26] || '',   // comments / illness flag
     ];
   }).filter(Boolean);
 }
 
 // spasmDetailData: [date, duration_min, spasm_count, location, notes]
+// Sheet cols: r[0]=datetime, r[1]=duration, r[2]=location, r[3]=spasm_count, r[4]=notes
 function parseSpasmDetail(rows) {
   return rows.slice(1).map(r => {
     const date = toISO(r[0]);
     if (!date) return null;
-    return [date, toNum(r[1]), toNum(r[2]), r[3] || '', r[4] || ''];
+    return [date, toNum(r[1]), toNum(r[3]), r[2] || '', r[4] || ''];
   }).filter(Boolean);
 }
 
