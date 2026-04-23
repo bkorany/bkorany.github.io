@@ -208,7 +208,7 @@
     /* ── INTERESTS ── */
     .interests-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: 1fr;
       gap: 1rem;
     }
     .interest-card {
@@ -508,6 +508,57 @@
       nav ul li a { padding: 0.85rem 0.7rem; font-size: 0.75rem; }
     }
 
+    /* ── NEWS + INTERESTS SIDE BY SIDE ── */
+    .news-interests-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      padding: 3.5rem 0 0;
+      align-items: start;
+    }
+    .news-interests-row section {
+      padding: 0;
+    }
+    @media (max-width: 768px) {
+      .news-interests-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── NEWS ── */
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: calc(3 * 5rem + 2 * 0.75rem);
+      overflow-y: auto;
+      padding-right: 0.4rem;
+    }
+    .news-list::-webkit-scrollbar { width: 4px; }
+    .news-list::-webkit-scrollbar-track { background: var(--surface); border-radius: 2px; }
+    .news-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .news-item {
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      padding: 1rem 1.3rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      transition: box-shadow 0.18s;
+    }
+    .news-item:hover { box-shadow: var(--shadow-sm); }
+    .news-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      padding-top: 0.15rem;
+      min-width: 72px;
+    }
+    .news-item a { color: var(--blue); text-decoration: none; font-weight: 500; }
+    .news-item a:hover { text-decoration: underline; }
+
     /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
@@ -522,6 +573,7 @@
 <!-- NAV -->
 <nav id="top">
   <ul>
+    <li><a href="#news">News</a></li>
     <li><a href="#interests">Interests</a></li>
     <li><a href="#work">Experience</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -563,25 +615,54 @@
 
 <main>
 
-  <!-- INTERESTS -->
-  <section id="interests">
-    <h2 class="section-title">Research Interests</h2>
-    <p class="section-subtitle">Core areas of focus</p>
-    <div class="interests-grid">
-      <div class="interest-card">
-        <div class="interest-icon">📡</div>
-        <p>WiFi-based sensing applications — localization, activity recognition, health monitoring</p>
+  <div class="news-interests-row">
+
+    <!-- INTERESTS -->
+    <section id="interests">
+      <h2 class="section-title">Research Interests</h2>
+      <p class="section-subtitle">Core areas of focus</p>
+      <div class="interests-grid">
+        <div class="interest-card">
+          <div class="interest-icon">📡</div>
+          <p>WiFi-based sensing applications — localization, activity recognition, health monitoring</p>
+        </div>
+        <div class="interest-card">
+          <div class="interest-icon">🛜</div>
+          <p>Wireless communications systems and signal processing</p>
+        </div>
+        <div class="interest-card">
+          <div class="interest-icon">📶</div>
+          <p>Next-generation wireless networks (5G/6G)</p>
+        </div>
       </div>
-      <div class="interest-card">
-        <div class="interest-icon">🛜</div>
-        <p>Wireless communications systems and signal processing</p>
+    </section>
+
+    <!-- NEWS -->
+    <section id="news">
+      <h2 class="section-title">News</h2>
+      <p class="section-subtitle">Recent updates</p>
+      <div class="news-list">
+
+        <div class="news-item">
+          <span class="news-date">2025</span>
+          <span>🏆 Received the <strong>IEEE Communications Society Outstanding Paper Award</strong> for "<a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">Nocturnal Seizure Detection Using Off-the-Shelf WiFi</a>."</span>
+        </div>
+
+        <div class="news-item">
+          <span class="news-date">Aug 2025</span>
+          <span>📄 Patent granted: "<a href="https://patents.google.com/patent/US12389415/en" target="_blank">Resource skipping for multiple grants</a>," US Patent 12,389,415.</span>
+        </div>
+
+        <div class="news-item">
+          <span class="news-date">2025</span>
+          <span>📝 New paper accepted at <strong>IEEE ICC 2025</strong>: "<a href="https://arxiv.org/abs/2505.04114" target="_blank">UX-aware Rate Allocation for Real-time Media</a>."</span>
+        </div>
+
       </div>
-      <div class="interest-card">
-        <div class="interest-icon">📶</div>
-        <p>Next-generation wireless networks (5G/6G)</p>
-      </div>
-    </div>
-  </section>
+    </section>
+
+  </div>
+  <a href="#top" class="back-top">↑ Back to top</a>
 
   <!-- WORK EXPERIENCE -->
   <section id="work">
@@ -805,7 +886,7 @@
       <div class="pub-group-title">Journal Publications</div>
       <p class="equal">* Equal contribution</p>
       <div class="pub-list">
-        <div class="pub-item"><strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">Nocturnal Seizure Detection Using Off-the-Shelf WiFi</a>," <em>IEEE Internet of Things Journal</em>, 2021. <span class="pub-venue">IEEE IoT-J</span></div><span class="badge">🏆 IEEE ComSoc Outstanding Paper Award 2025</span>
+        <div class="pub-item"><strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">Nocturnal Seizure Detection Using Off-the-Shelf WiFi</a>," <em>IEEE Internet of Things Journal</em>, 2021. <span class="pub-venue">IEEE IoT-J</span><span class="badge">🏆 IEEE ComSoc Outstanding Paper Award 2025</span></div>
         
         <div class="pub-item"><strong>B. Korany</strong>, H. Cai, and Y. Mostofi, "<a href="Papers/IoT20_KoranyCaiMostofi.pdf" target="_blank">Multiple People Identification Through-Walls Using Off-the-Shelf WiFi</a>," <em>IEEE Internet of Things Journal</em>, vol. 8, no. 8, pp. 6963–6974, April 2021. <span class="pub-venue">IEEE IoT-J</span></div>
         <div class="pub-item">H. Cai*, <strong>B. Korany</strong>*, C. R. Karanam*, and Y. Mostofi, "<a href="Papers/IMWUT20_CaiKoranyKaranamMostofi.pdf" target="_blank">Teaching RF to Sense without RF Training Measurements</a>," <em>ACM IMWUT</em>, vol. 4, no. 4, December 2020. <span class="pub-venue">ACM IMWUT</span> <a href="https://web.ece.ucsb.edu/mostofi-lab/imwut20-data.html" target="_blank" class="project-tag">Data &amp; Code ↗</a></div>
