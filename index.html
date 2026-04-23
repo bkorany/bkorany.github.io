@@ -1,368 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belal S. A. Korany</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 
-<html>
-<head><a name="top"></a><meta http-equiv="Content-Type" content="text/html; charset=GBK"><title> Belal Korany's Homepage </title><link rel="icon" href="pics/favicon.ico?v=2">
+  <style>
+    :root {
+      --navy: #0d1b2a;
+      --ink: #1a2942;
+      --blue: #1a56db;
+      --blue-light: #3b82f6;
+      --accent: #0ea5e9;
+      --gold: #d4a853;
+      --surface: #f7f9fc;
+      --surface-2: #eef2f9;
+      --border: #dde3ee;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --radius: 12px;
+      --shadow-sm: 0 1px 4px rgba(13,27,42,0.07);
+      --shadow-md: 0 4px 20px rgba(13,27,42,0.10);
+      --shadow-lg: 0 12px 48px rgba(13,27,42,0.13);
+    }
 
-<style>
-a.mainlink:link 
-{
-	font-size: small;
-	font-family: Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	display: block;
-	color: #000000;
-	padding: 4px;
-	background-color: #FFFFFF;
-	text-decoration: none;
-	border: 1px dotted #000000;
-}
-.boxed {
-  border: 1px solid black ;
-}
-</style>
-<!-- the old color is F0F8FF --> 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 0;
+      max-width: 1100px;
+      margin: 0 auto;
+      overflow-x: auto;
+    }
+    nav ul li a {
+      display: block;
+      padding: 1rem 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav ul li a:hover {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--ink) 60%, #1e3a5f 100%);
+      color: var(--white);
+      padding: 5rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(14,165,233,0.13), transparent),
+                  radial-gradient(ellipse 40% 60% at 10% 80%, rgba(26,86,219,0.12), transparent);
+    }
+    .hero-grid {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-photo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 0 6px rgba(14,165,233,0.18), var(--shadow-lg);
+    }
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+    .hero-title {
+      font-size: 1rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 1.4rem;
+      line-height: 1.5;
+    }
+    .hero-title strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .hero-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-size: 0.83rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      border: 1.5px solid var(--blue);
+    }
+    .btn-primary:hover { background: var(--blue-light); border-color: var(--blue-light); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.85);
+      border: 1.5px solid rgba(255,255,255,0.2);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.4); }
+
+    /* ── BIO STRIP ── */
+    .bio-strip {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.8rem 2rem;
+    }
+    .bio-strip p {
+      max-width: 820px;
+      margin: 0 auto;
+      font-size: 0.97rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    .bio-strip p a { color: var(--blue); text-decoration: none; }
+    .bio-strip p a:hover { text-decoration: underline; }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+
+    /* ── SECTION ── */
+    section {
+      padding: 3.5rem 0 0;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── INTERESTS ── */
+    .interests-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .interest-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .interest-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .interest-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--blue), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+    .interest-card p { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+
+    /* ── WORK EXPERIENCE ── */
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--blue), var(--border));
+      border-radius: 2px;
+    }
+    .timeline-item {
+      position: relative;
+      padding: 0 0 2rem 2rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 2.5px solid var(--blue);
+    }
+    .timeline-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      padding: 4px;
+      flex-shrink: 0;
+    }
+    .timeline-role {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.4;
+    }
+    .timeline-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+    .timeline-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .timeline-body ul { padding-left: 1.2rem; margin-top: 0.4rem; }
+    .timeline-body li { margin-bottom: 0.2rem; }
+    .badge {
+      display: inline-block;
+      font-size: 0.73rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #92400e;
+      margin-top: 0.4rem;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.2rem;
+    }
+    .project-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .project-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .project-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--blue);
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+    .project-title {
+      font-weight: 600;
+      font-size: 0.97rem;
+      color: var(--navy);
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+    .project-body {
+      font-size: 0.87rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .project-body ul { padding-left: 1.1rem; margin-top: 0.4rem; }
+    .project-body li { margin-bottom: 0.2rem; }
+    .project-tag {
+      display: inline-block;
+      margin-top: 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--blue);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .project-tag:hover { background: #dbeafe; }
+
+    /* ── EDUCATION ── */
+    .edu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .edu-item {
+      display: flex;
+      gap: 1.2rem;
+      padding: 1.2rem 1.4rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      align-items: flex-start;
+    }
+    .edu-degree {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--white);
+      background: var(--blue);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .edu-info h4 {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .edu-info p {
+      font-size: 0.87rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+      line-height: 1.5;
+    }
+    .edu-info a { color: var(--blue); text-decoration: none; }
+    .edu-info a:hover { text-decoration: underline; }
+
+    /* ── PUBLICATIONS ── */
+    .pub-group {
+      margin-bottom: 2.5rem;
+    }
+    .pub-group-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0.4rem 0;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .pub-list { display: flex; flex-direction: column; gap: 0.85rem; }
+    .pub-item {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.3rem;
+      font-size: 0.89rem;
+      line-height: 1.65;
+      color: var(--text);
+      transition: box-shadow 0.18s;
+    }
+    .pub-item:hover { box-shadow: var(--shadow-sm); }
+    .pub-item a { color: var(--blue); text-decoration: none; font-weight: 500; }
+    .pub-item a:hover { text-decoration: underline; }
+    .pub-item strong { color: var(--navy); }
+    .pub-venue {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--blue);
+      margin-left: 0.3rem;
+    }
+    .pub-note {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+    .equal { color: var(--text-muted); font-size: 0.82rem; margin-top: -0.5rem; margin-bottom: 1rem; }
+
+    /* ── ABOUT ── */
+    .about-card {
+      background: linear-gradient(135deg, var(--navy), var(--ink));
+      color: rgba(255,255,255,0.9);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-card::before {
+      content: '"';
+      position: absolute;
+      top: -1rem;
+      left: 1.5rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 10rem;
+      color: rgba(255,255,255,0.04);
+      line-height: 1;
+    }
+    .about-card p { position: relative; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+
+    /* ── BACK TO TOP ── */
+    .back-top {
+      display: block;
+      text-align: right;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .back-top:hover { color: var(--blue); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-photo { margin: 0 auto; }
+      .hero-links { justify-content: center; }
+      nav ul { gap: 0; }
+      nav ul li a { padding: 0.85rem 0.7rem; font-size: 0.75rem; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-grid > * { animation: fadeUp 0.6s ease both; }
+    .hero-grid > *:nth-child(2) { animation-delay: 0.12s; }
+  </style>
 </head>
-<body style="margin-right: 7.5%; margin-left: 7.5%;;padding:0" bgcolor="#FFFFFF" text="black">
-<font face="cmu serif" size="4pt">
-
-
-<p>
-<center>
-<table width="100%" border="0" cellpadding="10" cellspacing="0">
-<tr>
-<td width=170>
-<img src="pics/BK.jpg" border=1 width=170>
-</td>
-<td valign="bottom">
-
-
-<h1><font style="font-variant: small-caps; font-size: 37">Belal s. a. Korany</font></h1> 
-<h3>
-Senior Engineer<br>
-Wireless R&D department<br>
-Qualcomm Technologies Inc.<br>
-<a href="Belal Korany CV.pdf" target = "_blank">CV</a>
-<a href="https://eg.linkedin.com/in/belalsamin/">Linkedin</a>
-<a href="https://scholar.google.com.eg/citations?user=9ASj8L8AAAAJ&hl=en">Scholar</a> 
-<a href="mailto:belal.salama@gmail.com">Email</a>
-
-<br>
-</h3>
-<h4>
-<td width=150 "valign="right" align="middle">
-<div class="boxed"><a href="#Interests">Research Interests</a></div>
-<div class="boxed"><a href="#Projects">Research Projects</a></div>
-<div class="boxed"><a href="#Work">Work Experience</a></div>
-<div class="boxed"><a href="#Education">Education</a></div>
-<div class="boxed"><a HREF="#Publications">Publications</a></div>
-<div class="boxed"><a href="#About">About me</a></div>
-</h4>
-
-</td>
-</tr>
-</table>
-</center>
-
-
-<br>
-Hi there! I am a senior Wireless R&D Engineer at Qualcomm, working on cutting edge wireless technologies for 5G cellular networks. I  received my PhD degree in Electrical and Computer Engineering from <a href="http://www.ucsb.edu/">UC Santa Barbara</a>, in 2021. I received my B.Sc. and M.Sc. degrees in Electrical Engineering from Cairo University in 2012 and 2015, respectively.
-<br>
-<br>
-
-<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
-<a name="Interests"></a>
-<center><h2><font style="font-variant: small-caps; font-size: 32">Research Interests</font></h2> </center>
-<ul>
-
-<li><p> WiFi-based applications: e.g. Localization, activity recognition, health monitoring, and others. </p>
-<li><p> Wireless Communications. </p>
-<li><p> Next generation wireless networks. </p>
-</ul>
-<br>
-
-
-
-<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
-<a name="Work"></a>
-<center><h2><font style="font-variant: small-caps; font-size: 32">Work Experience</font></h2> </center>
-
-<table width="100%" border="0" cellpadding="20" cellspacing="0" border-spacing="100">
-
-	<tr>
-<td valign="top" align ="center">
-<img src="pics/QC.jpg" border=0 width=90>
-</td>
-<td valign="center">
-<strong>Senior Wireless Engineer, Qualcomm, San Diego, 2021--present</strong> <br>
-
-</td>
-</tr>
-
-
-<tr>
-<td valign="top" align ="center">
-<img src="pics/QC.jpg" border=0 width=90>
-</td>
-<td valign="center">
-<strong>Summer Intern at Qualcomm, NJ, USA, 2016</strong> <br>
-Recipient of the <i> Roberto Padovani Award </i> for interns with extraordinary technical talent.<br>
-- Analyzed wireless protocols and algorithms for 5G mmWave Networks. <br>
-- Simulated the 5G access network at link-level and system-level.<br>
-
-</td>
-</tr>
-<tr>
-<td valign="top" align="center">
-<img src="pics/intel.jpg" border=0 width=80>
-</td>
-<td valign="center">
-<strong>Wireless Systems Engineer at Intel Labs, Cairo, Egypt, 2013-2014</strong> <br>
-- Developed an interference mitigation solution for  WiFi/LTE coexistence on Intel platforms.<br>
-
-</td>
-</tr>
-
-<tr>
-<td valign="top" align="center">
-<img src="pics/cu.jpeg" border=0 width=90>
-</td>
-<td valign="center">
-<strong>Teaching assistant at the ECE department, Cairo University, Egypt, 2012-2015</strong> <br>
-- Assisted in teaching courses on wireless communications, analog and digital communication systems, signal processing,  information and coding theory, and electric circuits.<br>
-
-</td>
-</tr>
-
-</table>
-</center>
-
-
-<p align="right"><a href="#top">Back to top &#8593;</a></p>
-<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
-
-<a name="Projects"></a>
-<center><h2><font style="font-variant: small-caps; font-size: 32">Research Projects</font></h2> </center> 
-
-<h3> 1. Stationary Crowd Counting using WiFi signals [UCSB, 2021]: </h3>
-<!-- <a href="Mobisys21 sample.rar" target="_blank">Sample</a>
-<br> -->
-In this project, we investigate  the problem of counting a stationary crowd using the ambient WiFi signals, measured on off-the-shelf devices. As opposed to traditional crowd counting methods, which rely on all people in the area to constantly walk/move, stationary crowd counting is a relatively difficult problem due to the lack of major motion information. This project has resulted in one paper in ACM MobiSys '21 (acceptance rate = 21.5%).<br>
-
-In this project, I: 
-<ul>
-<li><p>  Developed a new and rigorous mathematical model to describe the fidgeting of stationary people. A fidget describes the small in-place motion that a stationary person is frequently involved in (such as pose adjustments). </p>
-<li><p>  Proposed a method to estimate the number of people in an area based on their collective fidgeting behavior, inspired by old queuing theory problems.</p>
-<li><p>  Experimentally validated our proposed approach by counting up to 10 people in 4 different areas, showing that the counting error is 0 or 1 only for 93.6% of the time. </p>
-</ul>
-<center>
-<figure>
-    <img src='pics/counting.png' width=65% />
-    <figcaption><font style="font-size: 15">Counting a group of stationary (seated) people gathered in a patio to watch a movie together, using off-the-shelf WiFi.</font></figcaption>
-</figure>
-</center>
-<br>
-
-
-
-<h3> 2. Nocturnal Seizure Detection using WiFi signals [UCSB, 2020]: </h3>
-In this project, we investigate  the problem of detecting nocturnal seizures in epilepsy patients, since they pose a high risk for the patients due to being unnoticed by the caregivers. Hence, we propose to invasively use the ambient WiFi signals near the patient to detect their nocturnal sleep movements and decide whether they are seizures or normal. This project has resulted in one paper in <a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">IEEE IoT '21</a>.<br>
-
-In this project, I: 
-<ul>
-<li><p>  Developed a new and rigorous mathematical model to describe the WiFi signals measured on a device near a sleeping patient during different kinds of sleep motions. </p>
-<li><p>  Proposed a WiFi processing pipeline to detect these nocturnal motions and classify them into seizures and normal movements.</p>
-<li><p>  Experimentally validated our proposed approach using simulated seizures from 20 actors, showing that our proposed framework can detect 94% of nocturnal seizures, with a very low probability of false alarm. </p>
-</ul>
-
-
-<h3> 3. Translating Videos to Instant RF Signals  [UCSB, 2020]: </h3> 
-
-
-In this project, we investigate  how vision data (e.g. video footage) can be used to generate instant RF signals for the purpose of training RF systems. We propose, for the first time, a WiFi system for gym activity classification by only using online available videos from YouTube. We published this work in <a href="Papers/IMWUT20_CaiKoranyKaranamMostofi.pdf" target="_blank">ACM IMWUT '20</a>. 
-
-In this project, we: 
-<ul>
-<!-- <li><p>  Proposed a method that enables training RF sensing systems with zero RF training data and by only using the available online video footage. </p> -->
-<li><p>  Showed how vision data can be translated to the RF domain.</p>
-<li><p>  Enabled WiFi-based gym activity classification by only using online available videos from YouTube.</p>
-<li><p>  Extensively tested the proposed pipeline with several experiments.</p>
-</ul>
-<center>
-<figure>
-    <img src='pics/sample_pipeline.png' width=65% />
-    <figcaption><font style="font-size: 15">Steps of Video-to-WiFi conversion: 1) 3D mesh extraction, and 2) WiFi signal/spectrogram generation.</font></figcaption>
-</figure>
-</center>
-<br>
-
-<h3> 4. Through-wall Person Identification with WiFi Signals [UCSB, 2019]: </h3>
-In this project, we investigate the problem of using WiFi to identify a person walking behind a wall from a candidate video footage. Such a technique can be used in many several real-world applications, such as security, surveillance, and personalized service provisioning. This project has resulted in two papers in <a href="Papers/MobiCom19_KoranyKaranamCaiMostofi.pdf" target = "_blank">ACM MobiCom '19</a> and <a href="Papers/IoT20_KoranyCaiMostofi.pdf" target="_blank">IEEE IoT '20</a>. More information about this project can be found in the <a href="https://web.ece.ucsb.edu/~ymostofi/IdentificationThroughWalls">project page</a>.<br>
-
-In this project, we: 
-<ul>
-<li><p>  Introduced XModal-ID: a novel system that uses WiFi to determine if a person walking behind a wall is the same as one walking in a given video footage. </p>
-<li><p>  Extended the proposed WiFi-based identification system to simultaneously identify multiple people through walls based on their gaits and Angles-of-Arrival.</p>
-<li><p>  Extensively validated the proposed framework with several experiments by showing how WiFi cards of laptops can identify people through walls.</p>
-</ul>
-<center>
-<figure>
-    <img src='pics/flowchart_xmodal.png' width=70% />
-    <figcaption><font style="font-size: 15">XModal-ID flowchart.</font></figcaption>
-</figure>
-</center>
-
-<br>
-
-
-
-
-
-
-<h3> 5. Human tracking using WiFi signal power [UCSB, 2019]: </h3>
-In this project, we investigate  the problem of simultaneously tracking single or multiple people walking in a WiFi-covered area. We propose a Particle-Filter-based solution to achieve this task using only the received WiFi signal power, which can be easily measured on off-the-shelf WiFi devices.  This project has resulted in two papers in <a href="Papers/IPSN18_KaranamKoranyMostofi.pdf" target = "_blank">ACM IPSN '18</a>, <a href="Papers/IPSN19_KaranamKoranyMostofi.pdf" target="_blank">ACM IPSN '19</a>.<br>
-In this project, we: 
-<ul>
-<li><p>  Proposed a particle-filter-based algorithm to track a single person using the WiFi received power.  </p>
-<li><p>  Extended the tracking algorithm to track multiple-people simultaneously using 3 laptops.</p>
-</ul>
-
-<center>
-<figure>
-    <img src='pics/HumanTrackingInset.jpg' width=40% />
-    <figcaption><font style="font-size: 15">Sample human tracking result.</font></figcaption>
-</figure>
-</center>
-
-<br>
-
-<h3> 6. Angle-of-Arrival Estimation Using only Signal Magnitude [UCSB, 2018]: </h3>
-In this project, we investigate  the traditional problem of estimating the Angles-of-Arrival (AoAs) of multiple sources, but using only the received signal's magnitude information.  This project has resulted in a paper in <a href="Papers/IPSN18_KaranamKoranyMostofi.pdf" target = "_blank">ACM IPSN '18</a>.<br>
-
-In this project, we: 
-<ul>
-<li><p>  Demonstrated that AoA estimation using only signal magnitude is possible, without signal phase.  </p>
-<li><p>  Mathematically related AoA to power spectrum content and developed antenna array design strategy. </p>
-<li><p>  Experimentally validated approach using a robot to synthesize arrays and measure WiFi magnitude </p>
-</ul>
-<br>
-<h3> 6. Device-to-Device (D2D) Communications Underlaying Massive MIMO Networks [Cairo University, 2015]: </h3>
-In this project, we explore different power allocation strategies for D2D communications underlaying Massive MIMO networks. We also explore the base station precoder design for ensuring certain QoS constraints for D2D communications.  This project has resulted in a paper in <a href="http://ieeexplore.ieee.org/document/7127643/" target = "_blank">IEEE WCNC '15</a> and a paper in <a href="https://link.springer.com/article/10.1007/s11276-016-1379-8" target = "_blank">Springer Wireless Networks '18</a>.<br>
-
-In this project, we: 
-<ul>
-<li><p>  Demonstrated that AoA estimation using only signal magnitude is possible, without signal phase.  </p>
-<li><p>  Mathematically related AoA to power spectrum content and developed antenna array design strategy. </p>
-<li><p>  Experimentally validated approach using a robot to synthesize arrays and measure WiFi magnitude </p>
-</ul>
-
-
-<p align="right"><a href="#top">Back to top &#8593;</a></p>
-
-
-
-<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
-
-<a name="Education"></a>
-<center><h2><font style="font-variant: small-caps; font-size: 32">Education</font></h2> </center>
-<ul>
-<li><strong>Ph.D.</strong>, University of California Santa Barbara, California, USA, 2021<br>
-Dissertation: Enabling Novel Sensing Applications with Everyday WiFi Signals. <br>
-<br>
-
-<li><strong>M.Sc.</strong>, Cairo University, Egypt, 2015<br>
-Thesis title: <a href="Belal_S_Amin_Korany_FullOnlineThesis.pdf" target = "_blank">Device-to-Device Communications Deployment in Massive MIMO Networks</a>. <br>
-<br>
-
-<li><strong>B.Sc.</strong>, Cairo University, Egypt, 2012 <br>
-Distinction with honors.
-
-</ul>
-<p align="right"><a href="#top">Back to top &#8593;</a></p>
-<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
-<a name="Publications"></a>
-<center><h2><font style="font-variant: small-caps; font-size: 32">Publications</font></h2> </center>
-<h3> Patents: </h3>
-<ul>
-
-<li><p> D. Maamari, P. Hande, M. Mondet, S. Kalamkar, <strong>B. Korany</strong>, and O. Iacoboaiea, “<a href="https://patents.google.com/patent/US12389415/en">Resource skipping for multiple
-grants</a>,” US patent 12,389,415, issued Aug. 2025.</p></li>
-
-<li><p> Y. Mostofi, A. Pallaprolu, <strong>B. Korany</strong>, and W. Hurst, “<a href="https://patents.google.com/patent/US20250123391A1/en">Exploiting diffraction for sensing with RF signals and/or
-for RF field programming</a>,” US Patent Application No. 18/904,812.</p></li>
-
-<li><p> D. Maamari, P. Gaal, P. Hande, C.P. Li, M. Mondet, <strong>B. Korany</strong>, Z. Zhou, and A. Elshafie, “<a href="https://patents.google.com/patent/US20250119232A1/en">Modification of
-modulation and coding scheme</a>,” US Patent Application No. 18/868,055.</p></li>
-
-<li><p> <strong>B. Korany</strong>, S. Kalamkar, P. Tinnakornsrisuphap, M. Mondet, and R. Agarwal, “<a href="https://patents.google.com/patent/US20240333420A1/en">Effectiveness of application
-forward error correction</a>,” US Patent Application No. 18/190,914.</p></li>
-
-<li><p> H. Saad, P. Tinnakornsrisuphap, S. Merlin, <strong>B. Korany</strong>, N. Leung, and A. Kandhadai, “<a href="https://patents.google.com/patent/US20230261775A1/en">Virtual content based at
-least in part on radio frequency and environment conditions</a>,” US Patent Application No. 18/167,659.</p></li>
-
-
-
-<li><p> Y. Mostofi, C. R. Karanam, and <strong>B. Korany </strong>, "<a href="https://patents.google.com/patent/WO2019200153">System and method of angle-of-arrival estimation, object localization, and target tracking, with received signal magnitude</a>," U.S. Patent Application No. 62/656,050, April 2018.</p></li>
-
-<li><p> A. S. Ibrahim, M. F. Marzban, and <strong>B. S. Amin </strong>, "<a href="https://patents.google.com/patent/US9794097B2/en">Methods and devices for interference variance estimation and interference cancellation</a>," U.S. Patent 9,794,097, issued Oct 2017.</p></li>
-
-<!-- <li><p> A. S. Ibrahim, M. F. Marzban, and <strong>B. S. Amin </strong>, "<a href="https://patents.google.com/patent/DE102014108835A1/en">Method and apparatus for interference variance estimation and interference cancellation</a>," DE patent application number 10 2014 108 835.2, filed June 2014.</p> -->
-</ul> 
-
-<h3> Journal Publications:</h3>
-<ul>
-
-<li><p> <strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">Nocturnal Seizure Detection Using Off-the-Shelf WiFi</a>," in the IEEE Internet of Things (IoT) Journal, 2021. </p></li>	
-
-<li><p> <strong>B. Korany</strong>, H.Cai, and Y. Mostofi, "<a href="Papers/IoT20_KoranyCaiMostofi.pdf" target="_blank">Multiple People Identification Through-Walls Using Off-the-Shelf WiFi</a>," in the IEEE Internet of Things (IoT) Journal, vol. 8, no. 8, pp. 6963-6974, April 2021. (Impact factor: 9.9) </p></li>
-
-<li><p>	H. Cai*, <strong>B. Korany</strong>*, C. R. Karanam*, and Y. Mostofi, "<a href="Papers/IMWUT20_CaiKoranyKaranamMostofi.pdf" target="_blank">Teaching RF to Sense without RF Training Measurements</a>,"
-in proceedings of the ACM on Interactive, Mobile, Wearable, and Ubiquitous Technologies (IMWUT), vol. 4, no. 4, December 2020. [<a href="https://web.ece.ucsb.edu/mostofi-lab/imwut20-data.html">Data and Codes</a>]</p></li>
-
-<li><p> <strong>B. S. Amin, </strong> A. S. Ibrahim, M. H. Ismail, and H. M. Mourad, "<a href="https://link.springer.com/article/10.1007/s11276-016-1379-8">Precoding and Power allocation Algorithms for Device-to-Device Communication in Massive MIMO Networks</a>," in Wireless Networks, vol. 24, no. 3, pp. 925-942, April 2018.</p></li>
-</ul>
-
-
-
-
-<h3> Conference Publications:</h3>
-<ul>
-
-	<li><p><strong>B. Korany</strong>, P. Tinnakornsrisuphap, S. Kassir, P. Hande, H. Y. Lee, and T. Stockhammer, "<a href="Phttps://arxiv.org/abs/2505.04114">UX-aware Rate
-Allocation for Real-time Media</a>,” in IEEE International Conference on Communications (ICC), 2025. 
-
-
-	<li><p> A. Pallaprolu, <strong>B. Korany</strong>, and Y. Mostofi, "<a href="https://ieeexplore.ieee.org/document/10149785"> Analysis of Keller Cones for WiFi Imaging</a>," in IEEE Radar Conference, 2023. </p></li>	
-<li><p>	A. Pallaprolu, <strong>B. Korany</strong>, and Y. Mostofi, "<a href="Papers/PallaproluKoranyMostofi_MobiCom2022.pdf" target="_blank">Wiffract: A New Foundation for RF Imaging via Edge Tracing</a>," in
-ACM International Conference on Mobile Computing and Networking (MobiCom), 2022.</p></li>
-
-
-
-<li><p><strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/Mobisys21_KoranyMostofi.pdf" target="_blank">Counting a Stationary Crowd Using Off-the-Shelf WiFi</a>," in  proceedings of the the 19th ACM International Conference on Mobile Systems, Applications, and Services (MobiSys), June 2021. (acceptance rate: 21.5%) [<a href="https://www.ece.ucsb.edu/~ymostofi/CountingStationaryCrowd.html">Project page</a>]</p></li>
-
-<li><p><strong>B. Korany</strong>*, C. R. Karanam*, H. Cai*, and Y. Mostofi, "<a href="Papers/MobiCom19_KoranyKaranamCaiMostofi.pdf" target = "_blank">XModal-ID: Using WiFi for Through-Wall Person Identification from Candidate Video Footage</a>," in  proceedings of the 25th Annual International Conference on Mobile Computing and Networking, (MobiCom), Oct 2019. (acceptance rate: 18.9%) [<a href="https://www.ece.ucsb.edu/~ymostofi/IdentificationThroughWalls">Project page</a>][<a href="https://www.youtube.com/watch?v=yy3fk5OfVeo">Slides</a>] </p></li>
-
-<li><p>C.R. Karanam, <strong>B. Korany</strong>, and Y. Mostofi, "<a href="Papers/IPSN19_KaranamKoranyMostofi.pdf" target = "_blank">Tracking from One Side -- Multi-Person Passive Tracking withWiFi Magnitude Measurements</a>," in proceedings of the 18th ACM International Conference on Information Processing in Sensor Networks (IPSN), April 2019. (acceptance rate: 27%) </p></li>
-
-<li><p><strong>B. Korany</strong>, S. Depatla, and Y. Mostofi, "<a href="Papers/SAM18_KoranyDepatlaMostofi.pdf" target = "_blank">Subspace-Based Imaging Using Only Power Measurements</a>," in  proceedings  of  the 10th IEEE Sensor Array and Multichannel Signal Processing Workshop, July 2018.</p></li>
-
-
-<li><p><strong>B. Korany</strong>*, C. R. Karanam*, and Y. Mostofi, "<a href="Papers/SAM18_KoranyKaranamMostofi.pdf" target = "_blank">Adaptive Near-Field Imaging with Robotic Arrays</a>," in  proceedings  of  the 10th IEEE Sensor Array and Multichannel Signal Processing Workshop, July 2018.</p></li>
-
-
-<li><p>C.R. Karanam*, <strong>B. Korany</strong>*, and Y. Mostofi, "<a href="Papers/IPSN18_KaranamKoranyMostofi.pdf" target = "_blank"> Magnitude-Based Angle-of-Arrival Estimation, Localization, and Target Tracking</a>," in proceedings of the 17th ACM/IEEE International Conference on Information Processing in Sensor Networks (IPSN), April 2018. (acceptance rate: 26.5%) </p></li>
-
-
-<li><p> <strong>B. S. Amin, </strong> Y. R. Ramadan, A. S. Ibrahim, and M. H. Ismail, "<a href="http://ieeexplore.ieee.org/document/7127643/">Power allocation for Device-to-Device Communication Underlaying Massive MIMO Multicasting Networks</a>," in proceedings of IEEE Wireless Communications and Networking Conference (WCNC) 2015, pp.1219-1224, March 2015.</p>
-</ul>
-
-
-<font color="gray" style="font-size: 15">*equal contribution</font>
-
-<p align="right"><a href="#top">Back to top &#8593;</a></p>
-
-<hr style="height:4px;border-width:0;color:#0072BD;background-color:#0072BD">
-<a name="About"></a>
-<center><h2><font style="font-variant: small-caps; font-size: 32">About Me</font></h2> </center>
-<center>I am a husband to a lovely wife, Rana, and a father to lovely children, Mariam and Omar. I like photography, traveling, Lord of the Rings, and football (Oh, soccer!). </center>
-
-</font>
-</p></li></body></html>
+<body>
+
+<!-- NAV -->
+<nav id="top">
+  <ul>
+    <li><a href="#interests">Interests</a></li>
+    <li><a href="#work">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid">
+    <img src="pics/BK.jpg" alt="Belal S. A. Korany" class="hero-photo">
+    <div>
+      <h1 class="hero-name">Belal S. A. Korany</h1>
+      <p class="hero-title">
+        <strong>Senior Wireless Engineer</strong> · Wireless R&amp;D, Qualcomm Technologies Inc.<br>
+        Ph.D. Electrical &amp; Computer Engineering, UC Santa Barbara, 2021
+      </p>
+      <div class="hero-links">
+        <a href="Belal Korany CV.pdf" target="_blank" class="btn-primary">
+          ↓ CV
+        </a>
+        <a href="https://eg.linkedin.com/in/belalsamin/" target="_blank" class="btn-ghost">LinkedIn</a>
+        <a href="https://scholar.google.com.eg/citations?user=9ASj8L8AAAAJ&hl=en" target="_blank" class="btn-ghost">Google Scholar</a>
+        <a href="mailto:belal.salama@gmail.com" class="btn-ghost">Email</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- BIO STRIP -->
+<div class="bio-strip">
+  <p>
+    Senior Wireless R&amp;D Engineer at Qualcomm, working on cutting-edge wireless technologies for 5G cellular networks. I received my Ph.D. in Electrical &amp; Computer Engineering from <a href="http://www.ucsb.edu/" target="_blank">UC Santa Barbara</a> in 2021, and my B.Sc. and M.Sc. degrees in Electrical Engineering from Cairo University in 2012 and 2015, respectively.
+  </p>
+</div>
+
+<main>
+
+  <!-- INTERESTS -->
+  <section id="interests">
+    <h2 class="section-title">Research Interests</h2>
+    <p class="section-subtitle">Core areas of focus</p>
+    <div class="interests-grid">
+      <div class="interest-card">
+        <div class="interest-icon">📡</div>
+        <p>WiFi-based sensing applications — localization, activity recognition, health monitoring</p>
+      </div>
+      <div class="interest-card">
+        <div class="interest-icon">📶</div>
+        <p>Wireless communications systems and signal processing</p>
+      </div>
+      <div class="interest-card">
+        <div class="interest-icon">🔭</div>
+        <p>Next-generation wireless networks (5G/6G)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK EXPERIENCE -->
+  <section id="work">
+    <h2 class="section-title">Work Experience</h2>
+    <p class="section-subtitle">Professional positions held</p>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <img src="pics/QC.jpg" alt="Qualcomm" class="timeline-logo">
+          <div>
+            <div class="timeline-role">Senior Wireless Engineer — Qualcomm Technologies, Inc.</div>
+            <div class="timeline-meta">San Diego, CA · 2021 – Present</div>
+          </div>
+        </div>
+        <div class="timeline-body">
+          Working on cutting-edge wireless technologies for 5G cellular networks in the Wireless R&amp;D department.
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <img src="pics/QC.jpg" alt="Qualcomm" class="timeline-logo">
+          <div>
+            <div class="timeline-role">Summer Intern — Qualcomm</div>
+            <div class="timeline-meta">New Jersey, USA · Summer 2016</div>
+            <span class="badge">🏆 Roberto Padovani Award</span>
+          </div>
+        </div>
+        <div class="timeline-body">
+          Recipient of the <em>Roberto Padovani Award</em> for interns with extraordinary technical talent.
+          <ul>
+            <li>Analyzed wireless protocols and algorithms for 5G mmWave networks</li>
+            <li>Simulated the 5G access network at link-level and system-level</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <img src="pics/intel.jpg" alt="Intel" class="timeline-logo">
+          <div>
+            <div class="timeline-role">Wireless Systems Engineer — Intel Labs</div>
+            <div class="timeline-meta">Cairo, Egypt · 2013 – 2014</div>
+          </div>
+        </div>
+        <div class="timeline-body">
+          <ul>
+            <li>Developed an interference mitigation solution for WiFi/LTE coexistence on Intel platforms</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <img src="pics/cu.jpeg" alt="Cairo University" class="timeline-logo">
+          <div>
+            <div class="timeline-role">Teaching Assistant — Cairo University, ECE Department</div>
+            <div class="timeline-meta">Cairo, Egypt · 2012 – 2015</div>
+          </div>
+        </div>
+        <div class="timeline-body">
+          <ul>
+            <li>Taught courses on wireless communications, analog/digital communication systems, signal processing, information &amp; coding theory, and electric circuits</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </section>
+
+  <!-- RESEARCH PROJECTS -->
+  <section id="projects">
+    <h2 class="section-title">Research Projects</h2>
+    <p class="section-subtitle">Selected projects from UCSB and beyond</p>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-num">01 · UCSB 2021</div>
+        <div class="project-title">Stationary Crowd Counting Using WiFi Signals</div>
+        <div class="project-body">
+          Proposed a method to count stationary people in an area using off-the-shelf WiFi.
+          <ul>
+            <li>Developed a model relating the number of people to the statistical properties of the WiFi channel</li>
+            <li>Demonstrated results in complex multi-room environments</li>
+          </ul>
+          <a href="https://www.ece.ucsb.edu/~ymostofi/CountingStationaryCrowd.html" target="_blank" class="project-tag">Project Page ↗</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">02 · UCSB 2019–2021</div>
+        <div class="project-title">Through-Wall Person Identification Using WiFi</div>
+        <div class="project-body">
+          Identified people through walls by cross-modal matching of WiFi and video signals.
+          <ul>
+            <li>Extracted gait information from WiFi and video independently</li>
+            <li>Matched subjects across modalities for identification</li>
+          </ul>
+          <a href="https://www.ece.ucsb.edu/~ymostofi/IdentificationThroughWalls" target="_blank" class="project-tag">Project Page ↗</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">03 · UCSB 2020</div>
+        <div class="project-title">Nocturnal Seizure Detection Using WiFi</div>
+        <div class="project-body">
+          Proposed using off-the-shelf WiFi to detect nocturnal seizures in a contactless, non-invasive manner.
+          <ul>
+            <li>Characterized WiFi signal response to seizure movements</li>
+            <li>Developed and validated a seizure detection algorithm</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">04 · UCSB 2020</div>
+        <div class="project-title">RF Sensing Without RF Training Measurements</div>
+        <div class="project-body">
+          Enabled RF-based sensing using only video training data — no RF measurements needed during training.
+          <ul>
+            <li>Transferred knowledge from video to RF domain</li>
+            <li>Demonstrated on human activity recognition tasks</li>
+          </ul>
+          <a href="https://web.ece.ucsb.edu/mostofi-lab/imwut20-data.html" target="_blank" class="project-tag">Data &amp; Code ↗</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">05 · UCSB 2019</div>
+        <div class="project-title">Multi-Person Tracking with WiFi</div>
+        <div class="project-body">
+          Tracked multiple people simultaneously using only WiFi received power measurements.
+          <ul>
+            <li>Proposed a particle-filter-based single-person tracking algorithm</li>
+            <li>Extended to multi-person tracking with 3 distributed laptops</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">06 · UCSB 2018</div>
+        <div class="project-title">Angle-of-Arrival Estimation Using Signal Magnitude Only</div>
+        <div class="project-body">
+          Demonstrated that AoA estimation is possible using only signal magnitude, without phase information.
+          <ul>
+            <li>Mathematically linked AoA to power spectrum content</li>
+            <li>Experimentally validated using a robot-synthesized antenna array</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-num">07 · Cairo University 2015</div>
+        <div class="project-title">D2D Communications in Massive MIMO Networks</div>
+        <div class="project-body">
+          Explored power allocation and precoder design for Device-to-Device communications underlaying Massive MIMO networks.
+          <ul>
+            <li>Developed power allocation strategies with QoS constraints</li>
+            <li>Designed base station precoders to support D2D links</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <h2 class="section-title">Education</h2>
+    <p class="section-subtitle">Academic background</p>
+    <div class="edu-list">
+      <div class="edu-item">
+        <span class="edu-degree">Ph.D.</span>
+        <div class="edu-info">
+          <h4>University of California, Santa Barbara — 2021</h4>
+          <p>Dissertation: <em>Enabling Novel Sensing Applications with Everyday WiFi Signals</em></p>
+        </div>
+      </div>
+      <div class="edu-item">
+        <span class="edu-degree">M.Sc.</span>
+        <div class="edu-info">
+          <h4>Cairo University, Egypt — 2015</h4>
+          <p>Thesis: <a href="Belal_S_Amin_Korany_FullOnlineThesis.pdf" target="_blank">Device-to-Device Communications Deployment in Massive MIMO Networks</a></p>
+        </div>
+      </div>
+      <div class="edu-item">
+        <span class="edu-degree">B.Sc.</span>
+        <div class="edu-info">
+          <h4>Cairo University, Egypt — 2012</h4>
+          <p>Electrical Engineering · Distinction with Honors</p>
+        </div>
+      </div>
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </section>
+
+  <!-- PUBLICATIONS -->
+  <section id="publications">
+    <h2 class="section-title">Publications</h2>
+    <p class="section-subtitle">Patents, journals, and conference papers</p>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Patents</div>
+      <div class="pub-list">
+        <div class="pub-item">D. Maamari, P. Hande, M. Mondet, S. Kalamkar, <strong>B. Korany</strong>, and O. Iacoboaiea, "<a href="https://patents.google.com/patent/US12389415/en" target="_blank">Resource skipping for multiple grants</a>," US Patent 12,389,415, issued Aug. 2025.</div>
+        <div class="pub-item">Y. Mostofi, A. Pallaprolu, <strong>B. Korany</strong>, and W. Hurst, "<a href="https://patents.google.com/patent/US20250123391A1/en" target="_blank">Exploiting diffraction for sensing with RF signals and/or for RF field programming</a>," US Patent Application No. 18/904,812.</div>
+        <div class="pub-item">D. Maamari, P. Gaal, P. Hande, C.P. Li, M. Mondet, <strong>B. Korany</strong>, Z. Zhou, and A. Elshafie, "<a href="https://patents.google.com/patent/US20250119232A1/en" target="_blank">Modification of modulation and coding scheme</a>," US Patent Application No. 18/868,055.</div>
+        <div class="pub-item"><strong>B. Korany</strong>, S. Kalamkar, P. Tinnakornsrisuphap, M. Mondet, and R. Agarwal, "<a href="https://patents.google.com/patent/US20240333420A1/en" target="_blank">Effectiveness of application forward error correction</a>," US Patent Application No. 18/190,914.</div>
+        <div class="pub-item">H. Saad, P. Tinnakornsrisuphap, S. Merlin, <strong>B. Korany</strong>, N. Leung, and A. Kandhadai, "<a href="https://patents.google.com/patent/US20230261775A1/en" target="_blank">Virtual content based at least in part on radio frequency and environment conditions</a>," US Patent Application No. 18/167,659.</div>
+        <div class="pub-item">Y. Mostofi, C. R. Karanam, and <strong>B. Korany</strong>, "<a href="https://patents.google.com/patent/WO2019200153" target="_blank">System and method of angle-of-arrival estimation, object localization, and target tracking</a>," U.S. Patent Application No. 62/656,050, April 2018.</div>
+        <div class="pub-item">A. S. Ibrahim, M. F. Marzban, and <strong>B. S. Amin</strong>, "<a href="https://patents.google.com/patent/US9794097B2/en" target="_blank">Methods and devices for interference variance estimation and interference cancellation</a>," U.S. Patent 9,794,097, issued Oct. 2017.</div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Journal Publications</div>
+      <div class="pub-list">
+        <div class="pub-item"><strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/IoT21_KoranyMostofi.pdf" target="_blank">Nocturnal Seizure Detection Using Off-the-Shelf WiFi</a>," <em>IEEE Internet of Things Journal</em>, 2021. <span class="pub-venue">IEEE IoT-J</span></div>
+        <div class="pub-item"><strong>B. Korany</strong>, H. Cai, and Y. Mostofi, "<a href="Papers/IoT20_KoranyCaiMostofi.pdf" target="_blank">Multiple People Identification Through-Walls Using Off-the-Shelf WiFi</a>," <em>IEEE Internet of Things Journal</em>, vol. 8, no. 8, pp. 6963–6974, April 2021. <span class="pub-venue">IEEE IoT-J</span></div>
+        <div class="pub-item">H. Cai*, <strong>B. Korany</strong>*, C. R. Karanam*, and Y. Mostofi, "<a href="Papers/IMWUT20_CaiKoranyKaranamMostofi.pdf" target="_blank">Teaching RF to Sense without RF Training Measurements</a>," <em>ACM IMWUT</em>, vol. 4, no. 4, December 2020. <span class="pub-venue">ACM IMWUT</span> <a href="https://web.ece.ucsb.edu/mostofi-lab/imwut20-data.html" target="_blank" class="project-tag">Data &amp; Code ↗</a></div>
+        <div class="pub-item"><strong>B. S. Amin</strong>, A. S. Ibrahim, M. H. Ismail, and H. M. Mourad, "<a href="https://link.springer.com/article/10.1007/s11276-016-1379-8" target="_blank">Precoding and Power Allocation Algorithms for Device-to-Device Communication in Massive MIMO Networks</a>," <em>Wireless Networks</em>, vol. 24, no. 3, pp. 925–942, April 2018. <span class="pub-venue">Springer</span></div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Conference Publications</div>
+      <p class="equal">* Equal contribution</p>
+      <div class="pub-list">
+        <div class="pub-item"><strong>B. Korany</strong>, P. Tinnakornsrisuphap, S. Kassir, P. Hande, H. Y. Lee, and T. Stockhammer, "<a href="https://arxiv.org/abs/2505.04114" target="_blank">UX-aware Rate Allocation for Real-time Media</a>," <em>IEEE ICC</em>, 2025. <span class="pub-venue">ICC '25</span></div>
+        <div class="pub-item">A. Pallaprolu, <strong>B. Korany</strong>, and Y. Mostofi, "<a href="https://ieeexplore.ieee.org/document/10149785" target="_blank">Analysis of Keller Cones for WiFi Imaging</a>," <em>IEEE Radar Conference</em>, 2023. <span class="pub-venue">RadarConf '23</span></div>
+        <div class="pub-item">A. Pallaprolu, <strong>B. Korany</strong>, and Y. Mostofi, "<a href="Papers/PallaproluKoranyMostofi_MobiCom2022.pdf" target="_blank">Wiffract: A New Foundation for RF Imaging via Edge Tracing</a>," <em>ACM MobiCom</em>, 2022. <span class="pub-venue">MobiCom '22</span></div>
+        <div class="pub-item"><strong>B. Korany</strong> and Y. Mostofi, "<a href="Papers/Mobisys21_KoranyMostofi.pdf" target="_blank">Counting a Stationary Crowd Using Off-the-Shelf WiFi</a>," <em>ACM MobiSys</em>, June 2021. <span class="pub-venue">MobiSys '21</span><span class="pub-note">Acceptance rate: 21.5% · <a href="https://www.ece.ucsb.edu/~ymostofi/CountingStationaryCrowd.html" target="_blank">Project page</a></span></div>
+        <div class="pub-item"><strong>B. Korany</strong>*, C. R. Karanam*, H. Cai*, and Y. Mostofi, "<a href="Papers/MobiCom19_KoranyKaranamCaiMostofi.pdf" target="_blank">XModal-ID: Using WiFi for Through-Wall Person Identification from Candidate Video Footage</a>," <em>ACM MobiCom</em>, Oct. 2019. <span class="pub-venue">MobiCom '19</span><span class="pub-note">Acceptance rate: 18.9% · <a href="https://www.ece.ucsb.edu/~ymostofi/IdentificationThroughWalls" target="_blank">Project page</a> · <a href="https://www.youtube.com/watch?v=yy3fk5OfVeo" target="_blank">Video</a></span></div>
+        <div class="pub-item">C. R. Karanam, <strong>B. Korany</strong>, and Y. Mostofi, "<a href="Papers/IPSN19_KaranamKoranyMostofi.pdf" target="_blank">Tracking from One Side — Multi-Person Passive Tracking with WiFi Magnitude Measurements</a>," <em>ACM/IEEE IPSN</em>, April 2019. <span class="pub-venue">IPSN '19</span><span class="pub-note">Acceptance rate: 27%</span></div>
+        <div class="pub-item"><strong>B. Korany</strong>, S. Depatla, and Y. Mostofi, "<a href="Papers/SAM18_KoranyDepatlaMostofi.pdf" target="_blank">Subspace-Based Imaging Using Only Power Measurements</a>," <em>IEEE SAM</em>, July 2018. <span class="pub-venue">SAM '18</span></div>
+        <div class="pub-item"><strong>B. Korany</strong>*, C. R. Karanam*, and Y. Mostofi, "<a href="Papers/SAM18_KoranyKaranamMostofi.pdf" target="_blank">Adaptive Near-Field Imaging with Robotic Arrays</a>," <em>IEEE SAM</em>, July 2018. <span class="pub-venue">SAM '18</span></div>
+        <div class="pub-item">C. R. Karanam*, <strong>B. Korany</strong>*, and Y. Mostofi, "<a href="Papers/IPSN18_KaranamKoranyMostofi.pdf" target="_blank">Magnitude-Based Angle-of-Arrival Estimation, Localization, and Target Tracking</a>," <em>ACM/IEEE IPSN</em>, April 2018. <span class="pub-venue">IPSN '18</span><span class="pub-note">Acceptance rate: 26.5%</span></div>
+        <div class="pub-item"><strong>B. S. Amin</strong>, Y. R. Ramadan, A. S. Ibrahim, and M. H. Ismail, "<a href="http://ieeexplore.ieee.org/document/7127643/" target="_blank">Power Allocation for Device-to-Device Communication Underlaying Massive MIMO Multicasting Networks</a>," <em>IEEE WCNC</em>, March 2015. <span class="pub-venue">WCNC '15</span></div>
+      </div>
+    </div>
+
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2 class="section-title">About Me</h2>
+    <p class="section-subtitle">Beyond the research</p>
+    <div class="about-card">
+      <p>I am a husband to a lovely wife, Rana, and a father to lovely children, Mariam and Omar. Outside of work, I enjoy photography, traveling, <em>The Lord of the Rings</em>, and football — or as they call it here, soccer!</p>
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2025 Belal S. A. Korany · <a href="mailto:belal.salama@gmail.com">belal.salama@gmail.com</a></p>
+</footer>
+
+</body>
+</html>
